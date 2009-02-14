@@ -10,6 +10,19 @@
 #include "packetid.hh"
 
 #define LOCK Poco::ScopedLock<Poco::Mutex> lock(mutex_)
+
+#define SEPERATOR "."
+#define EXT ".txt"
+#define USERINFO "DEFAULT"
+
+#define USER_TRACE "behavior"
+#define PAKT_TRACE "packet"
+
+//trace formats for packet trace 
+#define BASE 'B' //request for a base mesh by client 
+#define REQ  'S' //request for a node by the client 
+#define RESP 'R' //response by the server for a client request
+
 /**
  * a class for logging. 
  */
@@ -52,6 +65,19 @@ public:
     }
 
     /**
+     * constructor for file name using model name and type of file
+     */
+    Logger(const std::string model , const std::string type)
+            :needRelease_(true)
+    {
+
+	std::string filename = genTraceFileName(model,type);
+        p_os_ = new std::ofstream(filename.c_str());
+        gettimeofday(&begin_, 0);
+        *p_os_<<begin_.tv_sec<<" "<<begin_.tv_usec<<" Begin"<<std::endl;
+    }
+
+    /**
      * destructor.
      */
     ~Logger()
@@ -79,6 +105,16 @@ public:
         LOCK;
         *p_os_<<curr_time()<<" "<<direction<<" "<<type<<" "<<packet_no<<" "<<size<<std::endl;
     }
+    
+    /**
+     * log type, packet id, and size of pkt
+     */
+    inline void log(const char type, PacketID packet_no, int size)
+    {
+        LOCK;
+        *p_os_<<curr_time()<<" "<<type<<" "<<packet_no<<" "<<size<<std::endl;
+    }
+
 
     /**
      * log a specific message (C string).
@@ -87,6 +123,15 @@ public:
     {
         LOCK;
         *p_os_<<curr_time()<<" "<<direction<<" "<<type<<" "<<message<<std::endl;
+    }
+
+    /**
+     * log type and message
+     */
+    inline void log( const char type, const std::string message)
+    {
+        LOCK;
+        *p_os_<<curr_time()<<" "<<type<<" "<<message<<std::endl;
     }
 
     /**
@@ -131,6 +176,26 @@ public:
         *p_os_<<modelview_matrix_[14]<<" ";
         *p_os_<<modelview_matrix_[15]<<" ";
         *p_os_<<"View "<<view_pos_[0]<<" "<<view_pos_[1]<<" "<<view_pos_[2]<<std::endl;
+    }
+
+    /**
+     * return unique filename based on model and type names
+     */
+    inline std::string genTraceFileName(std::string model_name,std::string type)
+    {
+	time_t t = time(0);
+	struct tm* lt = localtime(&t);
+	char time_str[20];
+	std::sprintf(time_str, "%04d.%02d.%02d.%02d.%02d.%02d",
+	lt->tm_year + 1900, lt->tm_mon + 1, lt->tm_mday,
+	lt->tm_hour, lt->tm_min, lt->tm_sec);
+
+	std::string timestring = time_str;
+
+	std::string userinfo = USERINFO; //TODO add userinfo access methods
+	std::string filename = userinfo + SEPERATOR + type + SEPERATOR + timestring + EXT;
+	return filename;
+
     }
 
 private:

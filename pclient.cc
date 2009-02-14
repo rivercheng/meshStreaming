@@ -40,6 +40,10 @@ int main(int argc, char** argv)
     std::string ip_addr(argv[1]);
     std::string port(argv[2]);
     std::string prefix(argv[3]);
+    
+    Logger logusr(prefix,USER_TRACE);
+    Logger logpkt(prefix,PAKT_TRACE);
+    
     Logger logger;
     try
     {
@@ -47,7 +51,7 @@ int main(int argc, char** argv)
         StreamSocket sock(sa);
         SocketStream str(sock);
 
-        logger.log('S', 'I', prefix);
+        logger.log(BASE, prefix);
         str << prefix << std::endl;
         Poco::UInt16 udp_port;
         sock.receiveBytes(&udp_port, sizeof(udp_port));
@@ -88,7 +92,7 @@ int main(int argc, char** argv)
             render.setView(dx,dy,dz,angle_x,angle_y,angle_z,scale);
         }
 
-        PReceiver   receiver(mesh, visible_pq, render, ip_addr, udp_port, sock, logger);
+        PReceiver   receiver(mesh, visible_pq, render, ip_addr, udp_port, sock, logpkt);
         Thread      receiver_thread(std::string("receiver"));
         receiver_thread.start(receiver);
         render.enterMainLoop();

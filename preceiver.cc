@@ -50,7 +50,7 @@ void PReceiver::run(void)
                 usleep(1000);
             }
             BitString bs;
-            logger_.log('S', 'R', p_id, sizeof(p_id));
+            logger_.log(REQ, p_id, sizeof(p_id));
             udp_sock.sendBytes(&p_id, sizeof(p_id));
             try
             {
@@ -58,7 +58,7 @@ void PReceiver::run(void)
                 //std::cerr<<"received "<<len<<std::endl;
                 render_.receivedBytes_+= len;
                 PacketID id = readPacketID(buffer);
-                logger_.log('R', 'D', id, len-sizeof(id));
+                logger_.log(RESP, id, len-sizeof(id));
                 bs.read_binary(buffer+sizeof(id));
                 std::vector<VertexID> v_id_array;
                 packetID_to_vertexID_array(id, v_id_array, 4);

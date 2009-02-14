@@ -1,0 +1,9 @@
+
+In order to run the python-tk client you will need the followin packeges to be installed( tested on ubuntu )
+
+python-tk 
+python-imaging-tk 
+
+Also , you have to provide the correct server details in the client.py
+
+

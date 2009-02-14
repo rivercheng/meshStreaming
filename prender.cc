@@ -22,7 +22,7 @@ inline void log_view_parameter()
     view_pos_[0] =  render_->view_x_;
     view_pos_[1] =  render_->view_y_;
     view_pos_[2] =  render_->view_z_;
-    render_->logger_.log(modelview_matrix_, view_pos_);
+    render_->logger_.log2_->log(modelview_matrix_, view_pos_);
 }
 
 inline void check_visibility()
@@ -95,7 +95,7 @@ void draw_surface_with_arrays()
     {
         recheck_interval_ = 1;
         counter_ = 0;
-        render_->logger_.log("check visibility");
+        //TODO render_->logger_.log("check visibility");
         gfmesh_->reset_visibility(true);
         log_view_parameter();
         check_visibility();
@@ -103,7 +103,7 @@ void draw_surface_with_arrays()
     }
     if (render_->recheck_visibility_ && render_->visible_pq_ != NULL)
     {
-        render_->logger_.log("recheck visibility");
+        //TODO render_->logger_.log("recheck visibility");
         check_visibility();
         render_->setRecheck(false);
     }
@@ -238,6 +238,8 @@ void PRender::render_reset()
     mouse_button_ = 0;
     mouse_previous_x_ = 0;
     mouse_previous_y_ = 0;
+    mouse_last_x_ = 0;
+    mouse_last_y_ = 0;
     smooth_ = false;
     interpolated_ = false;
     perspective_  = true;
@@ -258,13 +260,14 @@ void keyboard(unsigned char key, int x, int y)
         {
             render_->visible_pq_->quit();
         }
-        render_->logger_.log("Quit");
+        render_->logger_.log(QUIT);
         sleep(1);
         //Poco::join(receiver);
         exit(0);
     case 'R':
     case 'r':
         render_->render_reset();
+        render_->logger_.log(RESET);
         break;
     case 'S':
     case 's':
@@ -282,22 +285,27 @@ void keyboard(unsigned char key, int x, int y)
         }
         render_->setCheck();
         render_->ppmesh_->resetExpectedLevel();
+        render_->logger_.log(SCALE);
         break;
     case 'M':
     case 'm':
         render_->smooth_ = !(render_->smooth_);
+        render_->logger_.log(SMOOTH);
         break;
     case 'I':
     case 'i':
         render_->interpolated_ = !(render_->interpolated_);
+        render_->logger_.log(INTRAPOLATE);
         break;
     case 'F':
     case 'f':
         render_->fill_   = !(render_->fill_);
+        render_->logger_.log(FILL);
         break;
     case 'L':
     case 'l':
         render_->outline_ = !(render_->outline_);
+        render_->logger_.log(OUTLINE);
         break;
     case 'P':
     case 'p':
@@ -309,20 +317,24 @@ void keyboard(unsigned char key, int x, int y)
         }
         render_->setCheck();
         render_->ppmesh_->resetExpectedLevel();
+        render_->logger_.log(PERSPECTIVE);
         break;
     case 'B':
     case 'b':
         render_->ppmesh_->refine(2*n);
+        render_->logger_.log(REFINE);
         break;
     case 'W':
     case 'w':
         ofs.open("out.oogl");
         render_->ppmesh_->writeOogl(ofs);
         ofs.close();
+        render_->logger_.log(WRITE);
         break;
     case 'O':
     case 'o':
         render_->to_output_ = true;
+        render_->logger_.log(OUTPUT);
         break;
     case 'C':
     case 'c':
@@ -330,6 +342,7 @@ void keyboard(unsigned char key, int x, int y)
         {
             render_->visible_pq_->setStrict(false);
         }
+        render_->logger_.log(CULL);
         break;
     case 'V':
     case 'v':
@@ -338,9 +351,11 @@ void keyboard(unsigned char key, int x, int y)
         <<render_->angle_x_<<" "<<render_->angle_y_<<" "<<\
         render_->angle_z_<<" "<<render_->scale_<<std::endl;
         ofs.close();
+        render_->logger_.log(VIEW);
         break;
     case '+':
         render_->ppmesh_->refine(n + n/50);
+        render_->logger_.log(REFINE);
         break;
 
     default:
@@ -358,15 +373,19 @@ void special(int key, int x, int y)
         {
         case GLUT_KEY_LEFT:
             render_->angle_y_ -= 10;
+            render_->logger_.log(REVOLVE_CLOCKWISE);
             break;
         case GLUT_KEY_RIGHT:
             render_->angle_y_ += 10;
+            render_->logger_.log(REVOLVE_ANTICLOCKWISE);
             break;
         case GLUT_KEY_UP:
             render_->dz_ += 0.1 * render_->bounding_length_;
+            render_->logger_.log(ZOOM_IN);
             break;
         case GLUT_KEY_DOWN:
             render_->dz_ -= 0.1 * render_->bounding_length_;
+            render_->logger_.log(ZOOM_OUT);
             break;
         default:
             break;
@@ -378,15 +397,19 @@ void special(int key, int x, int y)
         {
         case GLUT_KEY_LEFT:
             render_->dx_ -= 0.1*render_->bounding_length_;
+            render_->logger_.log(MOVE_LEFT);
             break;
         case GLUT_KEY_RIGHT:
             render_->dx_ += 0.1*render_->bounding_length_;
+            render_->logger_.log(MOVE_RIGHT);
             break;
         case GLUT_KEY_UP:
             render_->dy_ += 0.1*render_->bounding_length_;
+            render_->logger_.log(MOVE_UP);
             break;
         case GLUT_KEY_DOWN:
             render_->dy_ -= 0.1*render_->bounding_length_;
+            render_->logger_.log(MOVE_DOWN);
             break;
         default:
             break;
@@ -398,15 +421,19 @@ void special(int key, int x, int y)
         {
         case GLUT_KEY_LEFT:
             render_->angle_z_ += 10;
+            render_->logger_.log(ROTATE_CLOCKWISE);
             break;
         case GLUT_KEY_RIGHT:
             render_->angle_z_ -= 10;
+            render_->logger_.log(ROTATE_ANTICLOCKWISE);
             break;
         case GLUT_KEY_UP:
             render_->angle_x_ -= 10;
+            render_->logger_.log(TILT_FORWARD);
             break;
         case GLUT_KEY_DOWN:
             render_->angle_x_ += 10;
+            render_->logger_.log(TILT_BACKWARD);
             break;
         }
     }
@@ -423,6 +450,9 @@ void mouse(int button, int state, int x, int y)
         render_->mouse_button_ = button;
         render_->mouse_previous_x_ = x;
         render_->mouse_previous_y_ = y;
+        render_->mouse_last_x_ = x;
+        render_->mouse_last_y_ = y;
+        
         if (render_->visible_pq_)
         {
             render_->visible_pq_->stop();
@@ -430,9 +460,25 @@ void mouse(int button, int state, int x, int y)
     }
     else if (state == GLUT_UP)
     {
+    	//log the rotation or the zoom done by the user on the button up 
+    	if (render_->mouse_button_ == GLUT_LEFT_BUTTON)
+    	{
+    		double rotation_x = (120 * (x - render_->mouse_last_x_) / render_->width_);
+    		double rotation_y = (120 * (y - render_->mouse_last_y_) / render_->height_);
+    		render_->logger_.log(MOUSE_ROTATION,rotation_x,rotation_y);
+    		
+    	}
+    	else if (render_->mouse_button_ == GLUT_RIGHT_BUTTON)
+    	{
+    		double zoom =  (y - render_->mouse_last_y_)/render_->height_;
+    		render_->logger_.log(MOUSE_ZOOM,zoom);
+    	}
+    
         render_->mouse_button_ = 0;
         render_->mouse_previous_x_ = 0;
         render_->mouse_previous_y_ = 0;
+        render_->mouse_last_x_ = 0;
+        render_->mouse_last_y_ = 0;
         render_->setCheck();
     }
 }
@@ -445,11 +491,13 @@ void motion(int x, int y)
         render_->angle_x_ += (120 * (y - render_->mouse_previous_y_) / render_->height_);
         render_->mouse_previous_x_ = x;
         render_->mouse_previous_y_ = y;
+        
     }
     else if (render_->mouse_button_ == GLUT_RIGHT_BUTTON)
     {
         render_->dz_ += (render_->bounding_length_ * (y - render_->mouse_previous_y_)/render_->height_);
         render_->mouse_previous_y_ = y;
+        
     }
     render_->ppmesh_->resetExpectedLevel();
     glutPostRedisplay();
@@ -493,7 +541,7 @@ PRender::PRender(int& argc, char* argv[], const char* name, Ppmesh* ppmesh, PVis
         min_distance_(0.01), max_distance_(5000),\
         view_x_(0), view_y_(0), view_z_(0), dx_(0), dy_(0), dz_(0), angle_x_(0), \
         angle_y_(0), angle_z_(0), scale_(1), bounding_length_(1), mouse_button_(0),\
-        mouse_previous_x_(0), mouse_previous_y_(0), width_(500), height_(500), \
+        mouse_previous_x_(0), mouse_previous_y_(0),mouse_last_x_(0),mouse_last_y_(0) ,width_(500), height_(500), \
         smooth_(false), interpolated_(false), perspective_(true), \
         outline_(false), fill_(true), check_visibility_(true), recheck_visibility_(false),\
         to_output_(false), isStopped_(false), logger_(logger)

@@ -43,6 +43,8 @@ int main(int argc, char** argv)
     
     Logger logusr(prefix,USER_TRACE);
     Logger logpkt(prefix,PAKT_TRACE);
+    Logger logtran(prefix,TRANSFORM_TRACE);
+    logusr.log2_ = &logtran;
     
     Logger logger;
     try
@@ -82,7 +84,7 @@ int main(int argc, char** argv)
         str.close();  					//reconstitution of the poor progressive mesh complete
         //======================
         PVisiblePQ visible_pq(&mesh, mesh.gfmesh(), logger);
-        PRender render(argc, argv, "happy", &mesh, &visible_pq, 8, logger);
+        PRender render(argc, argv, "happy", &mesh, &visible_pq, 8, logusr);
 
         std::ifstream ifs(config.c_str());
         if (ifs)

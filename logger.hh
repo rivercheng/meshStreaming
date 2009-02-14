@@ -17,11 +17,48 @@
 
 #define USER_TRACE "behavior"
 #define PAKT_TRACE "packet"
+#define TRANSFORM_TRACE "matrix"
 
 //trace formats for packet trace 
 #define BASE 'B' //request for a base mesh by client 
 #define REQ  'S' //request for a node by the client 
 #define RESP 'R' //response by the server for a client request
+
+//trace formats for user actiosn 
+#define QUIT "QUIT"
+#define RESET "RESET"
+#define SCALE "SCALE"
+#define SMOOTH "SMOOTH"
+#define INTRAPOLATE "INTRAPOLATE"
+#define FILL "FILL"
+#define OUTLINE "OUTLINE"
+#define PERSPECTIVE "PERSPECTIVE"
+#define REFINE "REFINE"
+#define WRITE "WRITE"
+#define OUTPUT "OUTPUT"
+#define CULL "CULL"
+#define VIEW "VIEW"
+#define REVOLVE_CLOCKWISE "REVOLVE_CLOCKWISE"
+#define REVOLVE_ANTICLOCKWISE "REVOLVE_ANTICLOCKWISE"
+#define ZOOM_IN "ZOOM_IN"
+#define ZOOM_OUT "ZOOM_OUT"
+#define MOVE_LEFT "MOVE_LEFT"
+#define MOVE_RIGHT "MOVE_RIGHT"
+#define MOVE_UP "MOVE_UP"
+#define MOVE_DOWN "MOVE_DOWN"
+#define ROTATE_CLOCKWISE "ROTATE_CLOCKWISE"
+#define ROTATE_ANTICLOCKWISE "ROTATE_ANTICLOCKWISE"
+#define TILT_FORWARD "TILT_FORWARD"
+#define TILT_BACKWARD "TILT_BACKWARD" 
+#define MOUSE_ROTATION "MOUSE_ROTATION" 
+#define MOUSE_ZOOM "MOUSE_ZOOM"
+
+/**
+* MOUSE_ROTATION is in degrees 
+* MOUSE_ZOOM relative zoom relative to the bounding box
+*/
+
+
 
 /**
  * a class for logging. 
@@ -133,6 +170,26 @@ public:
         LOCK;
         *p_os_<<curr_time()<<" "<<type<<" "<<message<<std::endl;
     }
+    
+    /**
+     * log mouse zoom parameters 
+     */
+    inline void log( const std::string param1 , const double param2)
+    {
+        LOCK;
+        *p_os_<<curr_time()<<" "<<param1<<" "<<param2<<std::endl;
+    }
+    
+    
+    /**
+     * log mouse rotation parameters 
+     */
+    inline void log( const std::string param1 , const double param2,const double param3)
+    {
+        LOCK;
+        *p_os_<<curr_time()<<" "<<param1<<" "<<param2<<" "<<param3<<std::endl;
+    }
+    
 
     /**
      * log a specific message (STL string).
@@ -198,7 +255,10 @@ public:
 
     }
 
+    Logger *log2_;
+    
 private:
+    
     std::ostream* p_os_;
     struct timeval begin_;
     bool  needRelease_;

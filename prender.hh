@@ -97,6 +97,8 @@ private:
     int mouse_button_;
     int mouse_previous_x_;
     int mouse_previous_y_;
+    int mouse_last_x_; //non incremental
+    int mouse_last_y_; //no incremental
     int width_;
     int height_;
     bool smooth_;

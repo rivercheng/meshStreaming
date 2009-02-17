@@ -30,6 +30,7 @@ private:
     Poco::UInt16 udp_port_;
     StreamSocket& sock_;
     Logger& logger_;
+    double     average_len;
 };
 
 

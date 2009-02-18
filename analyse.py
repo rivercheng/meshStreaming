@@ -20,6 +20,12 @@ for line in inputFile.readlines():
 inputFile.close()
 
 print "time","datarate"
+count = 0
+total = 0
 for key in datarate.keys():
         print key,datarate[key]
+	count = count +1
+	total = total + datarate[key]
+
+print "Avarage data rate " , total/count
 

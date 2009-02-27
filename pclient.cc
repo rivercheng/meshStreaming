@@ -25,25 +25,33 @@ using Poco::Thread;
 int main(int argc, char** argv)
 {
     std::string config("view_config");
-    if (argc < 4 ||argc > 5)
+    std::string user("DEFAULT");
+    
+    if (argc < 4 ||argc > 6)
     {
         Path p(argv[0]);
         std::cout << "usage: " << p.getBaseName() << " <address> <port> <prefix>[view_config_file]" << std::endl;
         std::cout << "       download and display prefix.ppm from the server." << std::endl;
         return 1;
     }
+    
     if (argc == 5)
     {
         config = argv[4];
+    }
+    
+    if (argc == 6)
+    {
+        user = argv[5];
     }
 
     std::string ip_addr(argv[1]);
     std::string port(argv[2]);
     std::string prefix(argv[3]);
     
-    Logger logusr(prefix,USER_TRACE);
-    Logger logpkt(prefix,PAKT_TRACE);
-    Logger logtran(prefix,TRANSFORM_TRACE);
+    Logger logusr(prefix,user,USER_TRACE);
+    Logger logpkt(prefix,user,PAKT_TRACE);
+    Logger logtran(prefix,user,TRANSFORM_TRACE);
     logusr.log2_ = &logtran;
     
     Logger logger;

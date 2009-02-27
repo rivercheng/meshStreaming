@@ -13,7 +13,6 @@
 
 #define SEPERATOR "."
 #define EXT ".txt"
-#define USERINFO "DEFAULT"
 
 #define USER_TRACE "behavior"
 #define PAKT_TRACE "packet"
@@ -75,7 +74,7 @@ public:
     {
         p_os_ = &std::cout;
         gettimeofday(&begin_, 0);
-        *p_os_<<begin_.tv_sec<<" "<<begin_.tv_usec<<" Begin"<<std::endl;
+        *p_os_<<begin_.tv_sec<<" "<<begin_.tv_usec<<" BEGIN"<<std::endl;
     }
 
 
@@ -87,7 +86,7 @@ public:
     {
         p_os_ = new std::ofstream(filename);
         gettimeofday(&begin_, 0);
-        *p_os_<<begin_.tv_sec<<" "<<begin_.tv_usec<<" Begin"<<std::endl;
+        *p_os_<<begin_.tv_sec<<" "<<begin_.tv_usec<<" BEGIN"<<std::endl;
     }
 
     /**
@@ -98,20 +97,20 @@ public:
     {
         p_os_ = &os;
         gettimeofday(&begin_,0);
-        *p_os_<<begin_.tv_sec<<" "<<begin_.tv_usec<<" Begin"<<std::endl;
+        *p_os_<<begin_.tv_sec<<" "<<begin_.tv_usec<<" BEGIN"<<std::endl;
     }
 
     /**
      * constructor for file name using model name and type of file
      */
-    Logger(const std::string model , const std::string type)
+    Logger(const std::string model , const std::string user ,const std::string type)
             :needRelease_(true)
     {
 
-	std::string filename = genTraceFileName(model,type);
+	std::string filename = genTraceFileName(model,user,type);
         p_os_ = new std::ofstream(filename.c_str());
         gettimeofday(&begin_, 0);
-        *p_os_<<begin_.tv_sec<<" "<<begin_.tv_usec<<" Begin"<<std::endl;
+        *p_os_<<begin_.tv_sec<<" "<<begin_.tv_usec<<" BEGIN"<<std::endl;
     }
 
     /**
@@ -238,7 +237,7 @@ public:
     /**
      * return unique filename based on model and type names
      */
-    inline std::string genTraceFileName(std::string model_name,std::string type)
+    inline std::string genTraceFileName(std::string model_name,std::string user_name,std::string type)
     {
 	time_t t = time(0);
 	struct tm* lt = localtime(&t);
@@ -249,8 +248,7 @@ public:
 
 	std::string timestring = time_str;
 
-	std::string userinfo = USERINFO; //TODO add userinfo access methods
-	std::string filename = userinfo + SEPERATOR + type + SEPERATOR + timestring + EXT;
+	std::string filename = user_name + SEPERATOR + model_name + SEPERATOR + type + SEPERATOR + timestring + EXT;
 	return filename;
 
     }

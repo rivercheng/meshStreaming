@@ -7,6 +7,10 @@ model = " none"
 command = "./pclient localhost 10020 "
 
 def invokeClient(model):
+	name=text1.get()
+	if name=="Enter Session Name":
+		name="DEFAULT"
+	print name
 	os.system( command + model)
 	
 	
@@ -22,6 +26,7 @@ def click1():
 	button3.config(activebackground="white")
 	model=" dragon"
 	invokeClient(model)
+
 	
 
 def click2():
@@ -46,6 +51,14 @@ def click3():
 	model=" huge"
 	invokeClient(model)
 	
+def makeentry(parent, caption, width=None, **options):
+    	tk.Label(parent, text=caption).pack(side=tk.LEFT)
+    	entry = tk.Entry(parent, **options)
+    	if width:
+        	entry.config(width=width)
+    	entry.pack(side=tk.LEFT)
+    	return entry
+	
 #main window config
 root = tk.Tk()
 root.title("Reciever driven 3D Streaming")
@@ -65,10 +78,15 @@ im = Image.open(path + "/thai.jpg")
 photo3 = ImageTk.PhotoImage(im)
 
 
+
 #main label
 label1 = tk.Label(compound=tk.TOP,takefocus=0,text="Select a Model to Start Streaming",font = ("Arial", 12, "bold"))
 label1.pack(side=tk.TOP, padx=2, pady=2)
 
+text1 =  makeentry(root, "Session name:", 15)
+text1.insert(0, "Enter Name")
+#text1.pack(side=tk.TOP, padx=2, pady=2)
+#text1.pack()
 
 #buttons
 button1 = tk.Button(frame1, compound=tk.TOP, image=photo1,text="Dragon" , bg='white',activebackground='white' , command=click1)

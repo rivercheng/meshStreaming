@@ -3,15 +3,15 @@ import os
 import Image, ImageTk
 
 #globals
-model = " none"
+model = " huge "
 command = "./pclient localhost 10020 "
 
 def invokeClient(model):
 	name=text1.get()
-	if name=="Enter Session Name":
-		name="DEFAULT"
-	print name
-	os.system( command + model)
+	if name=="Enter Name":
+		name=" DEFAULT "
+	#print command + model + " view_config " + name 
+	os.system( command + model + " view_config " + name )
 	
 	
 

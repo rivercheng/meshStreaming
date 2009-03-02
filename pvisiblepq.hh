@@ -82,5 +82,7 @@ private:
     std::set<PacketID> p_id_set_;
     std::map<PacketID, bool> p_id_sent_;
     Poco::FastMutex stoped_;
+    Poco::RunnableAdapter<PVisiblePQ> *to_run_;
+    Poco::ThreadPool thread_pool_;
 };
 #endif

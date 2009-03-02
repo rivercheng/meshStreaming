@@ -23,6 +23,7 @@
 #include <set>
 #include <map>
 #include <queue>
+#include <cstring>
 #include <GL/glut.h>
 #include <Poco/Thread.h>
 #include <Poco/ThreadPool.h>
@@ -31,6 +32,8 @@
 #include "huffman.hh"
 #include "vertexid.hh"
 #include "commonType.hh"
+
+#define INLINE inline
 class Ppmesh;
 
 //exceptions
@@ -107,7 +110,7 @@ public:
      * Here, we assume the items in STL vector
      * is allocated together (it is often this case in current STL implementations).
      */
-    inline const Coordinate* vertex_array   (void) const
+    INLINE const Coordinate* vertex_array   (void) const
     {
         return &vertex_array_[0];
     }
@@ -115,7 +118,7 @@ public:
     /**
      * Return the address of face array.
      */
-    inline const Index*     face_array     (void)   const
+    INLINE const Index*     face_array     (void)   const
     {
         return &face_array_[0];
     }
@@ -123,7 +126,7 @@ public:
     /**
      * Return the address of vertex normal array.
      */
-    inline const Normalf*    vertex_normal_array(void) const
+    INLINE const Normalf*    vertex_normal_array(void) const
     {
         return &vertex_normal_array_[0];
     }
@@ -131,7 +134,7 @@ public:
     /**
      * return the address of face normal array.
      */
-    inline const Normalf*    face_normal_array(void)   const
+    INLINE const Normalf*    face_normal_array(void)   const
     {
         return &face_normal_array_[0];
     }
@@ -139,7 +142,7 @@ public:
     /**
      * return the vertex number.
      */
-    inline size_t vertex_number    (void) const
+    INLINE size_t vertex_number    (void) const
     {
         return vertex_array_.size()/3;
     }
@@ -147,7 +150,7 @@ public:
     /**
      * return the face number.
      */
-    inline size_t face_number      (void) const
+    INLINE size_t face_number      (void) const
     {
         return face_array_.size()/3;
     }
@@ -155,7 +158,7 @@ public:
     /**
      * return the size of vertex array.
      */
-    inline size_t vertex_array_size(void) const
+    INLINE size_t vertex_array_size(void) const
     {
         return vertex_array_.size();
     }
@@ -163,7 +166,7 @@ public:
     /**
      * return the size of face array.
      */
-    inline size_t face_array_size  (void) const
+    INLINE size_t face_array_size  (void) const
     {
         return face_array_.size();
     }
@@ -172,7 +175,7 @@ public:
     /**
      * return the face weight.
      */
-    inline unsigned int face_weight (Index index) const
+    INLINE unsigned int face_weight (Index index) const
     {
         return face_weight_array_[index];
     }
@@ -180,7 +183,7 @@ public:
     /**
      * return the vertex weight.
      */
-    inline unsigned int vertex_weight(Index index) const
+    INLINE unsigned int vertex_weight(Index index) const
     {
         return vertex_weight_array_[index];
     }
@@ -188,7 +191,7 @@ public:
     /**
      * set the face weight.
      */
-    inline void   set_face_weight  (Index index, unsigned int weight)
+    INLINE void   set_face_weight  (Index index, unsigned int weight)
     {
         face_weight_array_[index] = weight;
     }
@@ -196,7 +199,7 @@ public:
     /**
      * add weight to a given face.
      */
-    inline void   add_face_weight (Index index, unsigned int weight)
+    INLINE void   add_face_weight (Index index, unsigned int weight)
     {
         face_weight_array_[index] += weight;
     }
@@ -204,7 +207,7 @@ public:
     /**
      * add face weight by one.
      */
-    inline void increment_face_weight(Index index)
+    INLINE void increment_face_weight(Index index)
     {
         face_weight_array_[index] ++;
     }
@@ -213,7 +216,7 @@ public:
     /**
      * set vertex weight.
      */
-    inline void   set_vertex_weight (Index index, unsigned int weight)
+    INLINE void   set_vertex_weight (Index index, unsigned int weight)
     {
         vertex_weight_array_[index] = weight;
     }
@@ -221,7 +224,7 @@ public:
     /**
      * add vertex weight to a vertex.
      */
-    inline void   add_vertex_weight (Index index, unsigned int weight)
+    INLINE void   add_vertex_weight (Index index, unsigned int weight)
     {
         vertex_weight_array_[index] += weight;
     }
@@ -229,7 +232,7 @@ public:
     /**
      * add the face weight to all its three vertices.
      */
-    inline void   add_vertex_weight_in_face(Index f_index)
+    INLINE void   add_vertex_weight_in_face(Index f_index)
     {
         Index v1 = face_array_[3*f_index];
         Index v2 = face_array_[3*f_index+1];
@@ -244,8 +247,11 @@ public:
     /**
      * clear all the face weight and vertex weight.
      */
-    inline void clear_weight(void)
+    INLINE void clear_weight(void)
     {
+        memset(&face_weight_array_[0], 0, face_weight_array_.size());
+        memset(&vertex_weight_array_[0], 0, vertex_weight_array_.size());
+        /*
         for (size_t i = 0; i< face_weight_array_.size(); i++)
         {
             face_weight_array_[i] = 0;
@@ -253,7 +259,7 @@ public:
         for (size_t i = 0; i<vertex_weight_array_.size(); i++)
         {
             vertex_weight_array_[i] = 0;
-        }
+        }*/
     }
 
     /**
@@ -311,7 +317,7 @@ public:
      * It is used in rendering part to avoid refreshing
      * the same gfmesh.
      */
-    inline bool   updated          (void) const
+    INLINE bool   updated          (void) const
     {
         return updated_;
     }

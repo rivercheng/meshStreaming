@@ -54,6 +54,8 @@ void PVisiblePQ::stat_screen_area()
     }
     gfmesh->clear_weight();
     p_id_set_.clear();
+    std::set<Index> visibleFaces;
+    std::set<Index> visibleVertices;
     for (size_t i = 0; i < size_; i+=3)
     {
         unsigned char color_r = pixels_[i];
@@ -62,33 +64,83 @@ void PVisiblePQ::stat_screen_area()
         Index seq_no = color_r * 65536 + color_g*256 + color_b;
         if (seq_no != 0)
         {
-            gfmesh->increment_face_weight(seq_no-1);
+            Index index = seq_no -1;
+            gfmesh->increment_face_weight(index);
+            visibleFaces.insert(index);
         }
         if (!toContinue_) return;
     }
-    for (size_t i = 0; i < gfmesh->face_number(); i++)
+    std::set<Index>::iterator sit = visibleFaces.begin();
+    std::set<Index>::iterator send = visibleFaces.end();
+    //for (size_t i = 0; i < visibleFaces.size(); i++)
+    for (; sit != send; ++sit)
     {
-        if (gfmesh_->face_weight(i) == 0)
-        {
-            //gfmesh_->set_visibility(i, false);
-            //cannot set to false. Otherwise, some old hide faces now visible cannot be detected.
-        }
-        else
-        {
-            gfmesh_->set_visibility(i, true);
-            gfmesh->add_vertex_weight_in_face(i);
-        }
+        //if (gfmesh_->face_weight(i) > 0)
+        //{
+            //gfmesh_->set_visibility(i, true);
+            //gfmesh->add_vertex_weight_in_face(i);
+        //}
+        gfmesh_->set_visibility(*sit, true);
+        gfmesh_->add_vertex_weight_in_face(*sit);
+        visibleVertices.insert(gfmesh_->face_array()[3*(*sit)]);
+        visibleVertices.insert(gfmesh_->face_array()[3*(*sit)+1]);
+        visibleVertices.insert(gfmesh_->face_array()[3*(*sit)+2]);
         if (!toContinue_) return;
     }
-
-    //Now we compute the packet weight from the vertex weight.
-    std::vector<VertexID>::const_iterator it(ppmesh_->vertex_front().begin());
-    std::vector<VertexID>::const_iterator end(ppmesh_->vertex_front().end());
     
     //add a local map to increase the efficiency.
     std::map<PacketID, PacketInfo> local_info;
     std::map<PacketID, PacketInfo>::iterator local_iter;
     std::map<PacketID, PacketInfo>::iterator local_end = local_info.end();
+
+    sit = visibleVertices.begin();
+    send = visibleVertices.end();
+    for (; sit != send; ++sit)
+    {
+        if (!toContinue_) break;
+        if (gfmesh_->vertex_weight(*sit) < (unsigned int)THRESHOLD) continue;
+        VertexID id = ppmesh_->index2id(*sit);
+        if (ppmesh_->id2level(id) < 5) continue;
+        if (ppmesh_->idIsLeaf(id)) continue;
+        //if (ppmesh_->isPicked(id)) continue;
+        PacketID p_id = v_id_to_p_id(id, *ppmesh_);
+        local_iter = local_info.find(p_id);
+        
+        if (local_iter != local_end)
+        {
+            if (local_iter->second.isSent) continue;
+            local_iter->second.area += gfmesh_->vertex_weight(*sit);
+        }
+        else
+        {
+            if (p_id_sent_[p_id])
+            {
+                local_info[p_id].isSent = true;
+                continue;
+            }
+            else
+            {
+                local_info[p_id].area = gfmesh_->vertex_weight(*sit);
+                p_id_set_.insert(p_id); //add to sent packets set.
+            }
+        }
+    }
+    
+    std::set<PacketID>::const_iterator pit(p_id_set_.begin());
+    std::set<PacketID>::const_iterator pend(p_id_set_.end());
+    for (; pit != pend; ++pit)
+    {
+        if (!toContinue_) break;
+        push(*pit, local_info[*pit].area);
+    }
+
+
+
+    //Now we compute the packet weight from the vertex weight.
+    /*
+    std::vector<VertexID>::const_iterator it(ppmesh_->vertex_front().begin());
+    std::vector<VertexID>::const_iterator end(ppmesh_->vertex_front().end());
+    
     for (; it != end; ++it)
     {
         if (!toContinue_) break;
@@ -127,7 +179,7 @@ void PVisiblePQ::stat_screen_area()
         if (!toContinue_) break;
         push(*pit, local_info[*pit].area);
     }
-
+    */
 }
 
 void PVisiblePQ::update(unsigned char* pixels, size_t size)
@@ -152,39 +204,39 @@ void PVisiblePQ::push(PacketID pid, int area)
     {
         ;//do not split those vertices will contribute small.
     }
-    else if (area <= THRESHOLD+1)
+    else if (area <= THRESHOLD+10)
     {
         pid_lists[0].push_back(pid);
     }
-    else if (area == THRESHOLD+2)
+    else if (area == THRESHOLD+20)
     {
         pid_lists[1].push_back(pid);
     }
-    else if (area <=THRESHOLD+4 )
+    else if (area <=THRESHOLD+40)
     {
         pid_lists[2].push_back(pid);
     }
-    else if (area<=THRESHOLD+8)
+    else if (area<=THRESHOLD+80)
     {
         pid_lists[3].push_back(pid);
     }
-    else if (area<=THRESHOLD+16)
+    else if (area<=THRESHOLD+160)
     {
         pid_lists[4].push_back(pid);
     }
-    else if (area <= THRESHOLD+32)
+    else if (area <= THRESHOLD+320)
     {
         pid_lists[5].push_back(pid);
     }
-    else if (area <= THRESHOLD+64)
+    else if (area <= THRESHOLD+640)
     {
         pid_lists[6].push_back(pid);
     }
-    else if (area <= THRESHOLD+128)
+    else if (area <= THRESHOLD+1280)
     {
         pid_lists[7].push_back(pid);
     }
-    else if (area <= THRESHOLD+256)
+    else if (area <= THRESHOLD+2560)
     {
         pid_lists[8].push_back(pid);
     }

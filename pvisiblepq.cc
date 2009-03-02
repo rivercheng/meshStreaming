@@ -6,6 +6,7 @@
 #include "gfmesh.hh"
 static Ppmesh* ppmesh_ = NULL;
 static Gfmesh* gfmesh_ = NULL;
+static const int THRESHOLD = 10;
 
 
 PVisiblePQ::PVisiblePQ(Ppmesh* ppmesh, Gfmesh* gfmesh, Logger& logger)
@@ -147,39 +148,43 @@ void PVisiblePQ::update(unsigned char* pixels, size_t size)
 
 void PVisiblePQ::push(PacketID pid, int area)
 {
-    if (area <= 1)
+    if (area < THRESHOLD)
+    {
+        ;//do not split those vertices will contribute small.
+    }
+    else if (area <= THRESHOLD+1)
     {
         pid_lists[0].push_back(pid);
     }
-    else if (area == 2)
+    else if (area == THRESHOLD+2)
     {
         pid_lists[1].push_back(pid);
     }
-    else if (area <=4 )
+    else if (area <=THRESHOLD+4 )
     {
         pid_lists[2].push_back(pid);
     }
-    else if (area<=8)
+    else if (area<=THRESHOLD+8)
     {
         pid_lists[3].push_back(pid);
     }
-    else if (area<=16)
+    else if (area<=THRESHOLD+16)
     {
         pid_lists[4].push_back(pid);
     }
-    else if (area <= 32)
+    else if (area <= THRESHOLD+32)
     {
         pid_lists[5].push_back(pid);
     }
-    else if (area <= 64)
+    else if (area <= THRESHOLD+64)
     {
         pid_lists[6].push_back(pid);
     }
-    else if (area <= 128)
+    else if (area <= THRESHOLD+128)
     {
         pid_lists[7].push_back(pid);
     }
-    else if (area <= 256)
+    else if (area <= THRESHOLD+256)
     {
         pid_lists[8].push_back(pid);
     }

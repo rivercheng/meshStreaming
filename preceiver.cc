@@ -25,8 +25,9 @@ using Poco::Exception;
 
 const long wait_mseconds = 8000;
 const long wait_seconds  = 0;
-const double alpha = 1. / 8.;
-int window_size = 100;
+const double alpha = 7. / 8.;
+//int window_size = 100;
+int window_size = 1;
 int current_window = 0;
 long data_rate = 125000;
 
@@ -62,7 +63,7 @@ void PReceiver::run(void)
             		udp_sock.sendBytes(&p_id, sizeof(p_id));
             		current_window++;
             		p_id = 0;
-           		
+                    usleep(1000);
             	}
             }//end sender while loop
             	
@@ -75,7 +76,11 @@ void PReceiver::run(void)
 
                 current_window--;
                 average_len = len * (1-alpha) + average_len * alpha;
-                window_size = ( data_rate * RTT )/average_len;
+                //window_size = ( data_rate * RTT )/average_len;
+                std::cerr<<len<<" "<<alpha<<std::endl;
+                std::cerr<<average_len<<std::endl;
+                std::cerr<<window_size<<std::endl;
+                std::cerr<<"curr "<<current_window<<std::endl;
                 
                 bs.read_binary(buffer+sizeof(id));
                 std::vector<VertexID> v_id_array;

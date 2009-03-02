@@ -11,7 +11,7 @@ class PReceiver:public Poco::Runnable
 public:
     PReceiver(Ppmesh& ppmesh, PVisiblePQ& pq, PRender& render, \
               const std::string& ip_addr, Poco::UInt16 udp_port, StreamSocket& sock, Logger& logger)
-            :mesh_(ppmesh), pq_(pq), render_(render), ip_addr_(ip_addr), udp_port_(udp_port), sock_(sock), logger_(logger)
+            :mesh_(ppmesh), pq_(pq), render_(render), ip_addr_(ip_addr), udp_port_(udp_port), sock_(sock), logger_(logger), average_len(1000)
     {
         ;
     }

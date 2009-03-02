@@ -29,8 +29,10 @@
 #include "huffman.hh"
 #include "bitstring.hh"
 // --------------------
+#include "logger.hh"
 
 #define MAGIC_WORD "PPMESH"
+#define MAX_NEIGHBORS 1000
 
 //Quantize the difference.
 static int quantize_d(double value, double max, double min, unsigned int quantize_bit = 12)
@@ -646,6 +648,7 @@ bool Ppmesh::splitVs(splitInfo* split, bool temp)
     MyMesh::VertexHandle v1 = map_[split->id].v;
     //std::cerr<<mesh_.deref(v1).id<<" "<<split->id<<std::endl;
     assert(mesh_.deref(v1).id == split->id);
+    //Logger log;
 
     MyMesh::Point p1 = mesh_.point(v1);
     double x1 = p1[0];
@@ -1342,24 +1345,41 @@ size_t Ppmesh::code2id(const std::vector<VertexID>&id_array, unsigned int code, 
     //i-th bit, and then choose one group according to the input code.
     //If all neighbors go to one group, we just continue.
     size_t n  = 0;
-    result_array = id_array;
+    //to improve speed, we avoid using std::vector here
+    //So we convert result_array to a real array
+    
+    const VertexID *real_array = &(id_array[0]);
+    size_t real_size = id_array.size();
+    assert(real_size <= MAX_NEIGHBORS);
+    
+    VertexID id_array_1[MAX_NEIGHBORS];
+    VertexID id_array_2[MAX_NEIGHBORS];
+    
+    //result_array = id_array;
+    size_t n1 = 0;
+    size_t n2 = 0;
     for (; pos < sizeof(VertexID)*8; pos++)
     {
-        size_t n1 = 0;
-        size_t n2 = 0;
-        std::vector<VertexID> id_array_1;
-        std::vector<VertexID> id_array_2;
-        std::vector<VertexID>::const_iterator id_it;
-        for (id_it = result_array.begin(); id_it != result_array.end(); id_it++)
+        n1 = 0;
+        n2 = 0;
+        //std::vector<VertexID> id_array_1;
+        //std::vector<VertexID> id_array_2;
+        //std::vector<VertexID>::const_iterator id_it;
+        //for (id_it = result_array.begin(); id_it != result_array.end(); id_it++)
+        for (size_t i = 0; i < real_size; i++)
         {
-            if (idIsSet(*id_it, pos))
+            //if (idIsSet(*id_it, pos))
+            //DEBUG(real_array[i])
+            if (idIsSet(real_array[i], pos))
             {
-                id_array_2.push_back(*id_it);
+                //id_array_2.push_back(*id_it);
+                id_array_2[n2] = real_array[i];
                 n2++;
             }
             else
             {
-                id_array_1.push_back(*id_it);
+                //id_array_1.push_back(*id_it);
+                id_array_1[n1] = real_array[i];
                 n1++;
             }
         }
@@ -1373,17 +1393,47 @@ size_t Ppmesh::code2id(const std::vector<VertexID>&id_array, unsigned int code, 
             //DEBUG(str[n]);
             if (str[n] == '0')
             {
-                result_array = id_array_1;
+                //result_array = id_array_1;
+                real_array = id_array_1;
+                real_size = n1;
             }
             else
             {
-                result_array = id_array_2;
+                //result_array = id_array_2;
+                real_array = id_array_2;
+                real_size = n2;
             }
             n++;
         }
-        if (result_array.size() == 1)
+        //if (result_array.size() == 1)
+        if (real_size == 1)
         {
             break;
+        }
+    }
+
+
+    result_array.resize(real_size);
+    if (real_size > n1 && real_size > n2)
+    {
+        assert(real_size == n1 + n2);
+        for (size_t i = 0; i < n1; i++)
+        {
+            //result_array.push_back(id_array_1[i]);
+            result_array[i] = id_array_1[i];
+        }
+        for (size_t i = 0; i < n2; i++)
+        {
+            //result_array.push_back(id_array_2[i]);
+            result_array[n1+i] = id_array_2[i];
+        }
+    }
+    else
+    {
+        for (size_t i = 0 ; i < real_size; i++)
+        {
+            //result_array.push_back(real_array[i]);
+            result_array[i] = real_array[i];
         }
     }
 

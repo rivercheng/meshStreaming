@@ -34,15 +34,18 @@ static bool cmp(IdPair pair1, IdPair pair2)
 //to check whether a given bit is 1 or 0 in an ID.
 bool  idIsSet(VertexID id, size_t pos)
 {
-    while ((id & 0x80000000) == 0) id <<= 1;
-    VertexID mask = 0x80000000 >> (pos + 1);
-    return (id & mask);
+    //while (!(id & 0x80000000)) id <<= 1;
+    int len = len_of_id(id);
+
+    //VertexID mask = 0x80000000 >> (pos + 1);
+    //return (id & masks[pos+1]);
+    return (id & masks[32 - len + pos]);
 }
 
 /**
  * return the length of the ID, ignoring the leading 1.
  */
-size_t len_of_id(VertexID id)
+/*inline size_t len_of_id(VertexID id)
 {
     size_t len = 0;
     while (id != 0)
@@ -51,7 +54,7 @@ size_t len_of_id(VertexID id)
         len ++;
     }
     return len-1;
-}
+}*/
 
 /**
  * convert to a string representation.

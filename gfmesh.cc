@@ -6,13 +6,28 @@
 Gfmesh::Gfmesh()
         :updated_(false), ppmesh_(0)
 {
-    ;
+    vertex_array_.reserve(3*RESERVE_SIZE);
+    face_array_.reserve(6*RESERVE_SIZE);
+    vertex_normal_array_.reserve(3*RESERVE_SIZE);
+    face_normal_array_.reserve(6*RESERVE_SIZE);
+    vertex_weight_array_.reserve(RESERVE_SIZE);
+    face_weight_array_.reserve(2*RESERVE_SIZE);
+    face_visibility_array_.reserve(2*RESERVE_SIZE);
 }
 
 Gfmesh::Gfmesh(Ppmesh* ppmesh)
         :updated_(false),ppmesh_(ppmesh)
 {
     assert(ppmesh_);
+    
+    vertex_array_.reserve(3*RESERVE_SIZE);
+    face_array_.reserve(6*RESERVE_SIZE);
+    vertex_normal_array_.reserve(3*RESERVE_SIZE);
+    face_normal_array_.reserve(6*RESERVE_SIZE);
+    vertex_weight_array_.reserve(RESERVE_SIZE);
+    face_weight_array_.reserve(2*RESERVE_SIZE);
+    face_visibility_array_.reserve(2*RESERVE_SIZE);
+    
     ppmesh_->output_arrays(vertex_array_, face_array_);
     for (size_t i = 0; i< face_number(); i++)
     {
@@ -91,14 +106,17 @@ void Gfmesh::face_normal(Index face_index)
 
 void Gfmesh::vertex_normal(Index vertex_index)
 {
-    std::vector<Index> faces;
-    ppmesh_->vertex_faces(vertex_index, faces);
-    assert(faces.size() > 0);
+    //std::vector<Index> faces;
+    Index faces[MAX_VERTEX_FACE];
+    //ppmesh_->vertex_faces(vertex_index, faces);
+    //assert(faces.size() > 0);
+    size_t f_size = ppmesh_->vertex_faces(vertex_index, faces);
     double v_x = 0;
     double v_y = 0;
     double v_z = 0;
     //vertex normal is the sum of face normal without normalization of neighbor faces.
-    for (size_t i = 0; i < faces.size(); i++)
+    //for (size_t i = 0; i < faces.size(); i++)
+    for (size_t i = 0; i < f_size; i++)
     {
         v_x += (static_cast<double>(face_normal_array_[3*faces[i]]));
         v_y += (static_cast<double>(face_normal_array_[3*faces[i]+1]));
@@ -200,13 +218,17 @@ void Gfmesh::vertex_split(Index v1, Index vl, Index vr, Coordinate x0, Coordinat
     //color2_array_.push_back(1);
     //color3_array_.push_back(1);
 
-    std::vector<Index> faces;
-    ppmesh_->vertex_faces(v0, faces);
+    //std::vector<Index> faces;
+    Index faces[MAX_VERTEX_FACE];
+    //ppmesh_->vertex_faces(v0, faces);
+    size_t size = ppmesh_->vertex_faces(v0, faces);
     size_t old_size = face_array_.size();
-    for (size_t i = 0; i< faces.size(); i++)
+    //for (size_t i = 0; i< faces.size(); i++)
+    for (size_t i = 0; i< size; i++)
     {
         Index face_index = faces[i];
-        std::vector<Index> vertex_array;
+        //std::vector<Index> vertex_array;
+        Index vertex_array[MAX_FACE_VERTEX];
         //set all the neighbors visibile since they are changed.
         if (face_index < face_visibility_array_.size())
         {
@@ -270,18 +292,24 @@ void Gfmesh::vertex_split(Index v1, Index vl, Index vr, Coordinate x0, Coordinat
     }
 
     vertex_normal(v0);
-    std::vector<Index> vertices;
-    ppmesh_->vertex_vertices(v0, vertices);
+    //std::vector<Index> vertices;
+    Index vertices[MAX_VERTEX_VERTEX];
+    //ppmesh_->vertex_vertices(v0, vertices);
+    size_t v_v_size = ppmesh_->vertex_vertices(v0, vertices);
 
     //set the v1's neighbors are visible. since they may be covered before and now are visible.
-    std::vector<Index> faces2;
-    ppmesh_->vertex_faces(v1, faces2);
-    for (size_t i = 0; i< faces2.size(); i++)
+    //std::vector<Index> faces2;
+    Index faces2[MAX_VERTEX_FACE];
+    //ppmesh_->vertex_faces(v1, faces2);
+    size_t v_f_size = ppmesh_->vertex_faces(v1, faces2);
+    //for (size_t i = 0; i< faces2.size(); i++)
+    for (size_t i = 0; i< v_f_size; i++)
     {
         Index face_index = faces2[i];
         face_visibility_array_[face_index] = true;
     }
-    for (size_t i = 0; i< vertices.size(); i++)
+    //for (size_t i = 0; i< vertices.size(); i++)
+    for (size_t i = 0; i< v_v_size; i++)
     {
         vertex_normal(vertices[i]);
     }

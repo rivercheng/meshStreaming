@@ -118,6 +118,7 @@ public:
      */
     ~Logger()
     {
+        *p_os_<<std::endl;
         if (needRelease_)
         {
             delete p_os_;

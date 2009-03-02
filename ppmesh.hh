@@ -257,6 +257,21 @@ public:
         return;
     }
 
+    //unsafe version, for performance
+    template <typename T>
+    size_t vertex_faces(long vertex_index, T* face_array) const
+    {
+        size_t index = 0;
+        MyMesh::VertexHandle v(vertex_index);
+        MyMesh::ConstVertexFaceIter vf_it(mesh_, v);
+        while (vf_it)
+        {
+            //face_array.push_back(static_cast<T>(vf_it.handle().idx()));
+            face_array[index++] = static_cast<T>(vf_it.handle().idx());
+            ++vf_it;
+        }
+        return index;
+    }
     /**
      * output the vertices within a given face to give vertex_array.
      */
@@ -273,6 +288,20 @@ public:
         return;
     }
 
+    //unsafe version, for performance
+    template <typename T>
+    size_t face_vertices(long face_index, T* vertex_array) const
+    {
+        size_t index = 0;
+        MyMesh::FaceHandle f(face_index);
+        MyMesh::ConstFaceVertexIter fv_it(mesh_, f);
+        while (fv_it)
+        {
+            vertex_array[index++] = static_cast<T>(fv_it.handle().idx());
+            ++fv_it;
+        }
+        return index;
+    }
     /**
      * output all the vertices connected to a given vertex. Similar to one-ring neighbor
      * but with vertex index as the input.
@@ -291,6 +320,20 @@ public:
     }
 
 
+    //unsafe version, for performance
+    template <typename T>
+    size_t vertex_vertices(long vertex_index, T* vertex_array) const
+    {
+        size_t index = 0;
+        MyMesh::VertexHandle v(vertex_index);
+        MyMesh::ConstVertexVertexIter vv_it(mesh_, v);
+        while (vv_it)
+        {
+            vertex_array[index++] = static_cast<T>(vv_it.handle().idx());
+            ++vv_it;
+        }
+        return index;
+    }
     //self test, for debug
     bool    self_check(void);
 

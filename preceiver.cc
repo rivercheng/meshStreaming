@@ -82,6 +82,7 @@ void PReceiver::run(void)
                 packetID_to_vertexID_array(id, v_id_array, 4);
                 size_t pos = 0;
                 size_t j   = 0;
+                //logger_.log("before decode");
                 while (pos < bs.size())
                 {
                     //std::cerr<<"to decode "<<v_id_array[j]<<" "<<pos<<std::endl;
@@ -90,6 +91,7 @@ void PReceiver::run(void)
                     //mesh_.set_received(id_array[j]);
                     j++;
                 }
+                //logger_.log("after decode");
                 //std::cerr<<"decoded "<<j<<std::endl;
                 //if (n<number)
                 //{

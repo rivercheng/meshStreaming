@@ -47,6 +47,10 @@ class InvalidFaceIndex{};
 class Gfmesh
 {
 public:
+    const static int RESERVE_SIZE = 1000000;//assume at least space for RESERVER_SIZE vertices are allocated.
+    const static int MAX_VERTEX_FACE = 10000;
+    const static int MAX_FACE_VERTEX = 10;
+    const static int MAX_VERTEX_VERTEX = 10000;
     /**
      * default construction method.
      */

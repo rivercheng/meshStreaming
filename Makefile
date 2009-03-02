@@ -1626,6 +1626,7 @@ testview.o: /usr/include/sys/select.h /usr/include/bits/select.h
 testview.o: /usr/include/bits/time.h /usr/include/Poco/ThreadPool.h
 testview.o: bitstring.hh huffman.hh vertexid.hh commonType.hh gfmesh.hh
 vertexid.o: vertexid.hh bitstring.hh
+vertexid.sav.o: vertexid.hh bitstring.hh
 view.o: /usr/include/GL/glut.h /usr/include/GL/freeglut_std.h
 view.o: /usr/include/GL/gl.h /usr/include/GL/glext.h /usr/include/inttypes.h
 view.o: /usr/include/features.h /usr/include/sys/cdefs.h

@@ -347,8 +347,8 @@ private:
     void coarsen        (size_t n);
 
 private:
-    std::vector<Coordinate>   vertex_array_;
-    std::vector<Index>        face_array_;
+    std::vector<Coordinate>    vertex_array_;
+    std::vector<Index>         face_array_;
     std::vector<Normalf>       vertex_normal_array_;
     std::vector<Normalf>       face_normal_array_;
     std::vector<unsigned int>  vertex_weight_array_;

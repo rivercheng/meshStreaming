@@ -50,7 +50,7 @@ class InvalidFaceIndex{};
 class Gfmesh
 {
 public:
-    const static int RESERVE_SIZE = 1000000;//assume at least space for RESERVER_SIZE vertices are allocated.
+    const static int RESERVE_SIZE = 10000000;//assume at least space for RESERVER_SIZE vertices are allocated.
     const static int MAX_VERTEX_FACE = 10000;
     const static int MAX_FACE_VERTEX = 10;
     const static int MAX_VERTEX_VERTEX = 10000;
@@ -112,7 +112,7 @@ public:
      */
     INLINE const Coordinate* vertex_array   (void) const
     {
-        return &vertex_array_[0];
+        return (Coordinate *)&vertex_array_[0];
     }
 
     /**
@@ -249,10 +249,10 @@ public:
      */
     INLINE void clear_weight(void)
     {
-        memset(&face_weight_array_[0], 0, face_weight_array_.size());
-        memset(&vertex_weight_array_[0], 0, vertex_weight_array_.size());
-        /*
-        for (size_t i = 0; i< face_weight_array_.size(); i++)
+        memset(&face_weight_array_[0], 0, face_weight_array_.size()*sizeof(unsigned int));
+        memset(&vertex_weight_array_[0], 0, vertex_weight_array_.size()*sizeof(unsigned int));
+        
+        /*for (size_t i = 0; i< face_weight_array_.size(); i++)
         {
             face_weight_array_[i] = 0;
         }

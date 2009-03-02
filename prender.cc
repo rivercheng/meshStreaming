@@ -91,8 +91,8 @@ void draw_surface_with_arrays()
     Gfmesh* gfmesh_ = render_->ppmesh_->gfmesh();
     Poco::ScopedLock<Poco::Mutex> lock(gfmesh_->mutex_);
 
-    //glEnableClientState(GL_VERTEX_ARRAY);
-    //glVertexPointer(3, GL_DOUBLE, 0, gfmesh_->vertex_array());
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_DOUBLE, 0, gfmesh_->vertex_array());
     //glBindBuffer(GL_ARRAY_BUFFER, render_->bufferObjects_[0]);
     //glBufferData(GL_ARRAY_BUFFER, sizeof(double)*gfmesh_->vertex_number()*3, gfmesh_->vertex_array(), GL_DYNAMIC_DRAW);
     //glVertexPointer(3, GL_DOUBLE, 0, 0);
@@ -115,7 +115,7 @@ void draw_surface_with_arrays()
     if (render_->smooth_ || render_->interpolated_)
     {
         glEnableClientState(GL_NORMAL_ARRAY);
-        glNormalPointer(GL_FLOAT, 0, gfmesh_->vertex_normal_array());
+        glNormalPointer(GL_DOUBLE, 0, gfmesh_->vertex_normal_array());
         glDrawElements(GL_TRIANGLES, 3*gfmesh_->face_number(),GL_UNSIGNED_INT, gfmesh_->face_array());
     }
     else
@@ -127,7 +127,7 @@ void draw_surface_with_arrays()
         {
             if (gfmesh_->is_visible(i)) //only render visible triangles
             {
-                glNormal3f(gfmesh_->face_normal_array()[3*i], gfmesh_->face_normal_array()[3*i+1], gfmesh_->face_normal_array()[3*i+2]);
+                glNormal3d(gfmesh_->face_normal_array()[3*i], gfmesh_->face_normal_array()[3*i+1], gfmesh_->face_normal_array()[3*i+2]);
                 glArrayElement(gfmesh_->face_array()[3*i]);
                 glArrayElement(gfmesh_->face_array()[3*i+1]);
                 glArrayElement(gfmesh_->face_array()[3*i+2]);
@@ -641,8 +641,8 @@ PRender::PRender(int& argc, char* argv[], const char* name, Ppmesh* ppmesh, PVis
     //glBindBuffer(GL_ARRAY_BUFFER, bufferObjects_[0]);
     //glBindBuffer(GL_ARRAY_BUFFER, bufferObjects_[1]);
     //glBufferData(GL_ARRAY_BUFFER, 100000000, ppmesh_->gfmesh()->vertex_array(), GL_DYNAMIC_DRAW);
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_DOUBLE, 0, ppmesh_->gfmesh()->vertex_array());
+    //glEnableClientState(GL_VERTEX_ARRAY);
+    //glVertexPointer(3, GL_DOUBLE, 0, ppmesh_->gfmesh()->vertex_array());
     //glVertexPointer(3, GL_FLOAT, 0, 0);
 }
 

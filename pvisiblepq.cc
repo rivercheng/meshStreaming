@@ -6,7 +6,7 @@
 #include "gfmesh.hh"
 static Ppmesh* ppmesh_ = NULL;
 static Gfmesh* gfmesh_ = NULL;
-static const int THRESHOLD = 10;
+static const int THRESHOLD = 3;
 
 
 PVisiblePQ::PVisiblePQ(Ppmesh* ppmesh, Gfmesh* gfmesh, Logger& logger)
@@ -66,7 +66,14 @@ void PVisiblePQ::stat_screen_area()
         {
             Index index = seq_no -1;
             gfmesh->increment_face_weight(index);
-            visibleFaces.insert(index);
+            if (gfmesh->face_weight(index) == 1u)
+            {
+                gfmesh->set_visibility(index, true);
+            }
+            if (gfmesh->face_weight(index) ==(unsigned int)THRESHOLD)
+            {
+                visibleFaces.insert(index);
+            }
         }
         if (!toContinue_) return;
     }
@@ -80,7 +87,7 @@ void PVisiblePQ::stat_screen_area()
             //gfmesh_->set_visibility(i, true);
             //gfmesh->add_vertex_weight_in_face(i);
         //}
-        gfmesh_->set_visibility(*sit, true);
+        //gfmesh_->set_visibility(*sit, true);
         gfmesh_->add_vertex_weight_in_face(*sit);
         visibleVertices.insert(gfmesh_->face_array()[3*(*sit)]);
         visibleVertices.insert(gfmesh_->face_array()[3*(*sit)+1]);
@@ -98,7 +105,6 @@ void PVisiblePQ::stat_screen_area()
     for (; sit != send; ++sit)
     {
         if (!toContinue_) break;
-        if (gfmesh_->vertex_weight(*sit) < (unsigned int)THRESHOLD) continue;
         VertexID id = ppmesh_->index2id(*sit);
         if (ppmesh_->id2level(id) < 5) continue;
         if (ppmesh_->idIsLeaf(id)) continue;
@@ -200,19 +206,15 @@ void PVisiblePQ::update(unsigned char* pixels, size_t size)
 
 void PVisiblePQ::push(PacketID pid, int area)
 {
-    if (area < THRESHOLD)
-    {
-        ;//do not split those vertices will contribute small.
-    }
-    else if (area <= THRESHOLD+10)
+    if (area <= 20)
     {
         pid_lists[0].push_back(pid);
     }
-    else if (area == THRESHOLD+20)
+    else if (area <= 40)
     {
         pid_lists[1].push_back(pid);
     }
-    else if (area <=THRESHOLD+40)
+    else if (area <=60)
     {
         pid_lists[2].push_back(pid);
     }

@@ -77,10 +77,10 @@ void PReceiver::run(void)
                 current_window--;
                 average_len = len * (1-alpha) + average_len * alpha;
                 //window_size = ( data_rate * RTT )/average_len;
-                std::cerr<<len<<" "<<alpha<<std::endl;
-                std::cerr<<average_len<<std::endl;
-                std::cerr<<window_size<<std::endl;
-                std::cerr<<"curr "<<current_window<<std::endl;
+                //std::cerr<<len<<" "<<alpha<<std::endl;
+                //std::cerr<<average_len<<std::endl;
+                //std::cerr<<window_size<<std::endl;
+                //std::cerr<<"curr "<<current_window<<std::endl;
                 
                 bs.read_binary(buffer+sizeof(id));
                 std::vector<VertexID> v_id_array;

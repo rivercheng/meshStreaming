@@ -76,18 +76,12 @@ void PReceiver::run(void)
 
                 current_window--;
                 average_len = len * (1-alpha) + average_len * alpha;
-                //window_size = ( data_rate * RTT )/average_len;
-                //std::cerr<<len<<" "<<alpha<<std::endl;
-                //std::cerr<<average_len<<std::endl;
-                //std::cerr<<window_size<<std::endl;
-                //std::cerr<<"curr "<<current_window<<std::endl;
                 
                 bs.read_binary(buffer+sizeof(id));
                 std::vector<VertexID> v_id_array;
                 packetID_to_vertexID_array(id, v_id_array, 4);
                 size_t pos = 0;
                 size_t j   = 0;
-                //logger_.log("before decode");
                 while (pos < bs.size())
                 {
                     //std::cerr<<"to decode "<<v_id_array[j]<<" "<<pos<<std::endl;
@@ -96,8 +90,6 @@ void PReceiver::run(void)
                     //mesh_.set_received(id_array[j]);
                     j++;
                 }
-                //logger_.log("after decode");
-                //std::cerr<<"decoded "<<j<<std::endl;
                 //if (n<number)
                 //{
                 //    break;
@@ -109,8 +101,6 @@ void PReceiver::run(void)
             }
         }
         sock_.shutdownSend();
-        //std::ofstream ofs("out.pm", std::ios::binary);
-        //mesh_.writePM(ofs);
     }
     catch (Exception& exc)
     {

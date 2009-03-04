@@ -1,35 +1,21 @@
 //=============================================================================
 //Written by Cheng Wei
 //National University of Singapore
-//10 Dec 2007
+//04 Mar 2009
 //=============================================================================
 
 
-#ifndef __GFMESH_HH__
-#define __GFMESH_HH__
+#ifndef __GFPMESH_HH__
+#define __GFPMESH_HH__
 
 
 //== INCLUDES =================================================================
 
-#include <OpenMesh/Core/Mesh/Types/TriMesh_ArrayKernelT.hh>
-#include <OpenMesh/Core/Attributes/Attributes.hh>
 #include <Poco/Mutex.h>
 #include <vector>
-#include <string>
-#include <list>
 #include <iostream>
-#include <fstream>
-#include <bitset>
-#include <set>
-#include <map>
-#include <queue>
 #include <cstring>
-#include <GL/glut.h>
-#include <Poco/Thread.h>
-#include <Poco/ThreadPool.h>
 
-#include "bitstring.hh"
-#include "huffman.hh"
 #include "vertexid.hh"
 #include "commonType.hh"
 
@@ -39,67 +25,45 @@ class Ppmesh;
 //exceptions
 class InvalidFaceIndex{};
 
+
 /**
  * The class to provide GPU friendly representation of a mesh.
+ * It also supports certain level of progressivity.
  * It includes vertex array, face array, vertex normal array, 
- * and face normal array. To fasilitate the estimation of importance,
- * it also includes vertex weight array and face weight array.
- * There are other arrays: face visibility array and color arrays.
- * They are used in the demo.
+ * and face normal array. 
+ * For each vertex, it keeps the root index so that if the detail
+ * is not needed, this vertex can degenerate to the root vertex.
  */
-class Gfmesh
+class Gfpmesh
 {
 public:
+
+    struct VertexInfo
+    {
+        Index rootIndex;
+        Index currIndex;
+        VertexInfo(Index i, Index ri):rootIndex(ri), currIndex(i){;}
+    };
+
     const static int RESERVE_SIZE = 10000000;//assume at least space for RESERVER_SIZE vertices are allocated.
-    //const static int RESERVE_SIZE = 10;//assume at least space for RESERVER_SIZE vertices are allocated.
     const static int MAX_VERTEX_FACE = 10000;
-    const static int MAX_FACE_VERTEX = 10;
+    const static int MAX_FACE_VERTEX = 3;
     const static int MAX_VERTEX_VERTEX = 10000;
     /**
      * default construction method.
      */
-    Gfmesh(void);
+    Gfpmesh(void);
 
     /**
      * construction method with ppmesh as parameter.
      */
-    Gfmesh(Ppmesh* ppmesh);
+    Gfpmesh(Ppmesh* ppmesh);
 
     /**
      * the destruction method.
      */
-    ~Gfmesh(void);
+    ~Gfpmesh(void){;}
 
-    /**
-     * add a new vertex into the gfmesh.
-     */
-    void add_vertex     (Coordinate x, Coordinate y, Coordinate z)
-    {
-        vertex_array_.push_back(x);
-        vertex_array_.push_back(y);
-        vertex_array_.push_back(z);
-        vertex_normal_array_.push_back(0);
-        vertex_normal_array_.push_back(0);
-        vertex_normal_array_.push_back(0);
-        vertex_weight_array_.push_back(0);
-    }
-
-    /**
-     * add a new face into the gfmesh.
-     */
-    void add_face       (Index a, Index b, Index c)
-    {
-        face_array_.push_back(a);
-        face_array_.push_back(b);
-        face_array_.push_back(c);
-        face_normal_array_.push_back(0);
-        face_normal_array_.push_back(0);
-        face_normal_array_.push_back(0);
-        face_weight_array_.push_back(0);
-        face_visibility_array_.push_back(true);
-    }
-
-    
     /**
      * to split vertex v1 to v1 and (x0, y0, z0) with the cut neighbors vl and vr. 
      * This is the half-edge collapse, which is used currently.
@@ -301,7 +265,39 @@ public:
     }
 
     /**
-     * check if a face is visible.
+     * Collapse the whole mesh by setting all currIndex to rootIndex
+     */
+    INLINE void collapse(void)
+    {
+        for (size_t i = 0; i < vertex_info_array_.size(); i++)
+        {
+            vertex_info_array_[i]->currIndex = vertex_info_array_[i]->rootIndex;
+        }
+    }
+
+    /**
+     * Expand a given vertex by setting the currIndex to its own index.
+     */
+    INLINE void expand(Index v_i)
+    {
+        vertex_info_array_[v_i]->currIndex = v_i;
+    }
+
+    /**
+     * Expand all vertices in a face.
+     */
+    INLINE void expand_in_face(Index f_index)
+    {
+        Index v1 = face_array_[3*f_index];
+        Index v2 = face_array_[3*f_index+1];
+        Index v3 = face_array_[3*f_index+2];
+        expand(v1);
+        expand(v2);
+        expand(v3);
+    }
+
+    /**
+     * to check if a face is visible.
      */
     bool is_visible(Index f_index) const
     {
@@ -317,7 +313,7 @@ public:
     }
 
     /**
-     * reset all the face to invisible.
+     * reset all the faces to invisible.
      */
     void reset_visibility(bool value)
     {
@@ -327,30 +323,7 @@ public:
         }
     }
 
-    /**
-     * set the color of a face with R, G, B value.
-     */
-    /*void set_color(int i, float value1, float value2, float value3)
-    {
-        color1_array_[i] = value1;
-        color2_array_[i] = value2;
-        color3_array_[i] = value3;
-    }*/
-
-    /**
-     * reset all the face color to black.
-     */
-    /*void reset_color(void)
-    {
-        for (size_t i = 0; i<color1_array_.size(); i++)
-        {
-            color1_array_[i] = 1.;
-            color2_array_[i] = 1.;
-            color3_array_[i] = 1.;
-        }
-    }*/
-
-    /**
+     /**
      * to see if this gfmesh is updated.
      * It is used in rendering part to avoid refreshing
      * the same gfmesh.
@@ -372,25 +345,11 @@ public:
      * the mutex used to synchronize.
      */
     Poco::Mutex         mutex_;
-    //std::vector<unsigned int>  splits_;
-    //std::vector<float>         color1_array_;
-    //std::vector<float>         color2_array_;
-    //std::vector<float>         color3_array_;
+private:
     //to calculate the normal of the given face
     void  face_normal   (Index face_index);
     //to calculate the normal of the given vertex
     void  vertex_normal (Index vertex_index);
-
-    void clear_vertex_array(void)
-    {
-        for (size_t i=0; i<vertex_array_.size(); i++)
-        {
-            vertex_array_[i] = 0;
-        }
-    }
-private:
-    void refine         (size_t n);
-    void coarsen        (size_t n);
 
 private:
     std::vector<Coordinate>    vertex_array_;
@@ -400,6 +359,8 @@ private:
     std::vector<unsigned int>  vertex_weight_array_;
     std::vector<unsigned int>  face_weight_array_;
     std::vector<bool>          face_visibility_array_;
+    std::vector<VertexInfo*>    vertex_info_array_;
+
     bool                updated_;
     Ppmesh*             ppmesh_;
 };

@@ -6,11 +6,11 @@
 #include <Poco/ThreadPool.h>
 #include <Poco/RunnableAdapter.h>
 #include "ppmesh.hh"
-#include "gfmesh.hh"
+#include "gfpmesh.hh"
 class UnknownToken{};
 
 static Ppmesh* ppmesh_ = NULL;
-static Gfmesh* gfmesh_  = NULL;
+static Gfpmesh* gfmesh_  = NULL;
 class CompareArea : std::binary_function< VertexID, VertexID, bool>
 {
 public:
@@ -35,7 +35,7 @@ public:
     /**
      * Constructor from pointers to ppmesh and gfmesh.
      */
-    VisiblePQ(Ppmesh* ppmesh, Gfmesh* gfmesh);
+    VisiblePQ(Ppmesh* ppmesh, Gfpmesh* gfmesh);
 
     /**
      * destructor.

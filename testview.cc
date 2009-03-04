@@ -3,7 +3,7 @@
 #include <fstream>
 #include "view.hh"
 #include "vertexid.hh"
-#include "gfmesh.hh"
+#include "gfpmesh.hh"
 
 Ppmesh* ppmesh = 0;
 View*   view   = 0;
@@ -21,7 +21,7 @@ bool   reshaped_  = false;
 void disp()
 {
     ppmesh = view->ppmesh();
-    Gfmesh* gfmesh = ppmesh->gfmesh();
+    Gfpmesh* gfmesh = ppmesh->gfmesh();
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     glShadeModel(GL_FLAT);
     glPushMatrix();
@@ -155,7 +155,7 @@ int main(int argc, char** argv)
     }
     view = new View(fmesh, config, width, height);
     ppmesh = view->ppmesh();
-    Gfmesh* gfmesh = ppmesh->gfmesh();
+    Gfpmesh* gfmesh = ppmesh->gfmesh();
 
     Coordinate center_x = 0;
     Coordinate center_y = 0;

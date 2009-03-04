@@ -3,13 +3,13 @@
 #include "Poco/RunnableAdapter.h"
 #include "Poco/Mutex.h"
 #include "Poco/Exception.h"
-#include "gfmesh.hh"
+#include "gfpmesh.hh"
 static Ppmesh* ppmesh_ = NULL;
-static Gfmesh* gfmesh_ = NULL;
+static Gfpmesh* gfmesh_ = NULL;
 static const int THRESHOLD = 3;
 
 
-PVisiblePQ::PVisiblePQ(Ppmesh* ppmesh, Gfmesh* gfmesh, Logger& logger)
+PVisiblePQ::PVisiblePQ(Ppmesh* ppmesh, Gfpmesh* gfmesh, Logger& logger)
         :toContinue_(true), isStrict_(true), logger_(logger),\
         toQuit_(false), pixels_(0), size_(0) //ppmesh_(ppmesh), gfmesh_(gfmesh)
 {
@@ -46,7 +46,7 @@ void PVisiblePQ::stop(void)
 //Update the packet importance according to the pixels_ buffer.
 void PVisiblePQ::stat_screen_area()
 {
-    Gfmesh* gfmesh = gfmesh_;
+    Gfpmesh* gfmesh = gfmesh_;
     //clear weight
     for (int i = 0; i < 10; i++)
     {

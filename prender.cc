@@ -6,7 +6,7 @@
 
 #include "prender.hh"
 #include "ppmesh.hh"
-#include "gfmesh.hh"
+#include "gfpmesh.hh"
 #include "pvisiblepq.hh"
 
 const size_t FRAME_BUFFER_SIZE = 1024*768*3;
@@ -29,7 +29,7 @@ inline void log_view_parameter()
 
 inline void check_visibility()
 {
-    Gfmesh* gfmesh_ = render_->ppmesh_->gfmesh();
+    Gfpmesh* gfmesh_ = render_->ppmesh_->gfmesh();
     glDisable(GL_LIGHTING);
     glDisable(GL_DITHER);
     unsigned char color_r = 0;
@@ -88,7 +88,7 @@ inline void check_visibility()
 void draw_surface_with_arrays()
 {
     static int output_counter = 1;
-    Gfmesh* gfmesh_ = render_->ppmesh_->gfmesh();
+    Gfpmesh* gfmesh_ = render_->ppmesh_->gfmesh();
     Poco::ScopedLock<Poco::Mutex> lock(gfmesh_->mutex_);
 
     glEnableClientState(GL_VERTEX_ARRAY);
@@ -168,7 +168,6 @@ void draw_surface_with_arrays()
         output_counter++;
         render_->to_output_ = false;
     }
-
 }
 
 void disp()
@@ -551,7 +550,7 @@ PRender::PRender(int& argc, char* argv[], const char* name, Ppmesh* ppmesh, PVis
         outline_(false), fill_(true), check_visibility_(true), recheck_visibility_(false),\
         to_output_(false), isStopped_(false), logger_(logger)
 {
-    Gfmesh* gfmesh = ppmesh->gfmesh();
+    Gfpmesh* gfmesh = ppmesh->gfmesh();
 
     Coordinate center_x = 0;
     Coordinate center_y = 0;

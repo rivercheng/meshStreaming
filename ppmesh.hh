@@ -31,7 +31,7 @@
 #include "huffman.hh"
 #include "vertexid.hh"
 #include "commonType.hh"
-class Gfmesh;
+class Gfpmesh;
 //== CLASS DEFINITION =========================================================
 
 using namespace OpenMesh;
@@ -511,6 +511,21 @@ public:
     unsigned int    id2level(VertexID id) const;
 
     /**
+     * to find the root ID of a vertex ID.
+     */
+    VertexID rootId(VertexID id) const
+    {
+        size_t len = len_of_id(id);
+        VertexID rootId = id;
+        while(len > tree_bits_)
+        {
+            rootId >>=1;
+            len--;
+        }
+        return rootId;
+    }
+
+    /**
      * to check whether an ID is of a leaf.
      */
     bool idIsLeaf(VertexID id)
@@ -537,7 +552,7 @@ public:
     /**
      * return the pointer to embedded gfmesh.
      */
-    Gfmesh* gfmesh(void) const
+    Gfpmesh* gfmesh(void) const
     {
         return gfmesh_;
     }
@@ -691,7 +706,7 @@ private:
     size_t                              waiting_;
 
 
-    Gfmesh*                             gfmesh_;
+    Gfpmesh*                             gfmesh_;
     bool                                needGfmesh_;
     unsigned int                        expected_level_;
 

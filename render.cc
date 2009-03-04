@@ -3,6 +3,7 @@
 
 #include "render.hh"
 #include "ppmesh.hh"
+#include "gfpmesh.hh"
 #include "visiblepq.hh"
 #include <ctime>
 
@@ -18,7 +19,7 @@ static int counter_ = 0;
 void draw_surface_with_arrays()
 {
     static int output_counter = 1;
-    Gfmesh* gfmesh_ = render_->ppmesh_->gfmesh();
+    Gfpmesh* gfmesh_ = render_->ppmesh_->gfmesh();
     Poco::ScopedLock<Poco::Mutex> lock(gfmesh_->mutex_);
 
     glEnableClientState(GL_VERTEX_ARRAY);
@@ -534,7 +535,7 @@ Render::Render(int& argc, char* argv[], const char* name, Ppmesh* ppmesh, Visibl
         smooth_(false), interpolated_(false), perspective_(true), \
         outline_(false), fill_(true), check_visibility_(true), to_output_(false), display_color_(true)
 {
-    Gfmesh* gfmesh = ppmesh->gfmesh();
+    Gfpmesh* gfmesh = ppmesh->gfmesh();
 
     Coordinate center_x = 0;
     Coordinate center_y = 0;

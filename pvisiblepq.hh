@@ -21,7 +21,7 @@ public:
     /**
      * constructor from points to ppmesh and gfmesh. A logger is needed for logging.
      */
-    PVisiblePQ(Ppmesh* ppmesh, Gfmesh* gfmesh, Logger& logger);
+    PVisiblePQ(Ppmesh* ppmesh, Gfpmesh* gfmesh, Logger& logger);
 
     /**
      * destructor.

@@ -73,6 +73,7 @@ void PVisiblePQ::stat_screen_area()
             if (gfmesh->face_weight(index) ==(unsigned int)THRESHOLD)
             {
                 visibleFaces.insert(index);
+                gfmesh->expand_in_face(index, 3);
             }
         }
         if (!toContinue_) return;

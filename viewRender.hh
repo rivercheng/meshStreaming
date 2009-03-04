@@ -1,16 +1,9 @@
-#ifndef __PRENDER_HH__
-#define __PRENDER_HH__
-#include "ppmesh.hh"
-#include "pvisiblepq.hh"
-#include "logger.hh"
+#ifndef __VIEW_RENDER_HH__
+#define __VIEW_RENDER_HH__
+#include "gfpmesh.hh"
 
-class NoBaseMesh{};
-
-
-class PRender
+class ViewRender
 {
-    friend void update_view_parameter(void);
-    friend void stat_screen_area(void);
     friend void disp(void);
     friend void draw_surface_with_arrays(void);
     friend void reshape(int w, int h);
@@ -18,14 +11,9 @@ class PRender
     friend void special(int key, int x, int y);
     friend void mouse(int button, int state, int x, int y);
     friend void motion(int x, int y);
-    friend void timer(int value);
-    friend void log_view_parameter();
-    friend void check_visibility();
-    friend void check_visibility2();
-    friend void quick_check_visibility(int step);
 
 public:
-    PRender(int& argc, char* argv[], const char* name, Ppmesh* ppmesh, PVisiblePQ* visible_pq, int framerate, Logger& logger);
+    ViewRender(int& argc, char* argv[], const char* name, Gfpmesh* gfmesh);
     void enterMainLoop();
 
     void setSmooth(bool value)
@@ -48,17 +36,7 @@ public:
     {
         fill_ = value;
     }
-    void setCheck(bool value = true)
-    {
-        check_visibility_ = value;
-    }
-    void setRecheck(bool value = true)
-    {
-        recheck_visibility_ = value;
-    }
-    size_t receivedBytes_;
-    size_t sentBytes_;
-    PVisiblePQ* visible_pq_;
+    
     void setView(double dx, double dy, double dz, double angle_x,\
                  double angle_y, double angle_z, double scale)
     {
@@ -77,8 +55,7 @@ private:
 
 
 private:
-    Ppmesh* ppmesh_;
-    Gfpmesh* basemesh_;
+    Gfpmesh* gfmesh_;
     double view_angle_;
     double left_distance_;
     double right_distance_;
@@ -109,10 +86,6 @@ private:
     bool perspective_;
     bool outline_;
     bool fill_;
-    bool check_visibility_;
-    bool recheck_visibility_;
     bool to_output_;
-    bool isStopped_;
-    Logger& logger_;
 };
 #endif

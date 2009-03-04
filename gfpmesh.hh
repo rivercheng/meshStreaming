@@ -38,13 +38,6 @@ class Gfpmesh
 {
 public:
 
-    struct VertexInfo
-    {
-        Index rootIndex;
-        Index currIndex;
-        VertexInfo(Index i, Index ri):rootIndex(ri), currIndex(i){;}
-    };
-
     const static int RESERVE_SIZE = 10000000;//assume at least space for RESERVER_SIZE vertices are allocated.
     const static int MAX_VERTEX_FACE = 10000;
     const static int MAX_FACE_VERTEX = 3;
@@ -64,6 +57,42 @@ public:
      */
     ~Gfpmesh(void){;}
 
+    /**
+     * add a new vertex into the gfmesh.
+     */
+    void add_vertex     (Coordinate x, Coordinate y, Coordinate z)
+    {
+        vertex_array_.push_back(x);
+        vertex_array_.push_back(y);
+        vertex_array_.push_back(z);
+        vertex_normal_array_.push_back(0);
+        vertex_normal_array_.push_back(0);
+        vertex_normal_array_.push_back(0);
+        vertex_weight_array_.push_back(0);
+        //vertex_currIndex_.push_back((Index)vertex_currIndex_.size());
+        vertex_rootIndex_.push_back((Index)vertex_rootIndex_.size());
+        vertex_root1Index_.push_back((Index)vertex_root1Index_.size());
+        vertex_root2Index_.push_back((Index)vertex_root2Index_.size());
+        vertex_parentIndex_.push_back((Index)vertex_parentIndex_.size());
+        vertex_level_.push_back(1);
+        vertex_step_.push_back(3);
+        //root_visibility_array_.push_back(true);
+    }
+
+    /**
+     * add a new face into the gfmesh.
+     */
+    void add_face       (Index a, Index b, Index c)
+    {
+        face_array_.push_back(a);
+        face_array_.push_back(b);
+        face_array_.push_back(c);
+        face_normal_array_.push_back(0);
+        face_normal_array_.push_back(0);
+        face_normal_array_.push_back(0);
+        face_weight_array_.push_back(0);
+        face_visibility_array_.push_back(true);
+    }
     /**
      * to split vertex v1 to v1 and (x0, y0, z0) with the cut neighbors vl and vr. 
      * This is the half-edge collapse, which is used currently.
@@ -265,35 +294,95 @@ public:
     }
 
     /**
+     * Return the currIndex of a given vertex index.
+     */
+    INLINE Index curr_index(Index v_index)
+    {
+        //int step = vertex_step_[v_index];
+        int step = vertex_step_[vertex_rootIndex_[v_index]];
+        switch(step)
+        {
+           case 3:
+               return v_index;
+               break;
+           case 2:
+               return vertex_root2Index_[v_index];
+               break;
+           case 1:
+               return vertex_root1Index_[v_index];
+               break;
+           case 0:
+               return vertex_rootIndex_[v_index];
+               break;
+           default:
+               std::cerr<<"wrong step"<<std::endl;
+               return v_index;
+        }
+        //return vertex_currIndex_[v_index];
+    }
+
+
+    /**
      * Collapse the whole mesh by setting all currIndex to rootIndex
      */
     INLINE void collapse(void)
     {
-        for (size_t i = 0; i < vertex_info_array_.size(); i++)
+        for (size_t i = 0; i < vertex_step_.size(); i++)
         {
-            vertex_info_array_[i]->currIndex = vertex_info_array_[i]->rootIndex;
+            vertex_step_[i] = 0;
         }
     }
 
     /**
      * Expand a given vertex by setting the currIndex to its own index.
      */
-    INLINE void expand(Index v_i)
+    INLINE void expand(Index v_i, int step)
     {
-        vertex_info_array_[v_i]->currIndex = v_i;
+        assert(step >= 0);
+        assert(step <= 3);
+        vertex_step_[v_i] = step;
+        Index i = v_i;
+        while(vertex_parentIndex_[i] != i)
+        {
+            i = vertex_parentIndex_[i];
+            vertex_step_[i] = step;
+        }
+        vertex_step_[i] = step;
+        /*
+        Index i = v_i;
+        while(vertex_level_[i] > level)
+        {
+            i = vertex_parentIndex_[i];
+        }
+        Index j = v_i;
+        while(j != v_i)
+        {
+            vertex_currIndex_[j] = i;
+            j = vertex_parentIndex_[j];
+        }
+        while(vertex_parentIndex_[i] != i)
+        {
+            vertex_currIndex_[i] = i;
+            i = vertex_parentIndex_[i];
+        }*/
     }
 
     /**
      * Expand all vertices in a face.
      */
-    INLINE void expand_in_face(Index f_index)
+    INLINE void expand_in_face(Index f_index, int step)
     {
         Index v1 = face_array_[3*f_index];
         Index v2 = face_array_[3*f_index+1];
         Index v3 = face_array_[3*f_index+2];
-        expand(v1);
-        expand(v2);
-        expand(v3);
+        expand(v1, step);
+        expand(v2, step);
+        expand(v3, step);
+    }
+
+    INLINE int step(Index v_i)
+    {
+        return vertex_step_[v_i];
     }
 
     /**
@@ -323,6 +412,54 @@ public:
         }
     }
 
+    /*INLINE void reset_root_visibility(bool value = false)
+    {
+        for (size_t i=0; i<root_visibility_array_.size();i++)
+        {
+            root_visibility_array_[i] = value;
+        }
+    }*/
+
+    INLINE void reset_step(int step = 0)
+    {
+        for (size_t i=0; i<vertex_step_.size();i++)
+        {
+            vertex_step_[i] = step;
+        }
+    }
+    
+    /*INLINE void set_root_visibility(Index face_index)
+    {
+        Index v1 = vertex1_in_face(face_index);
+        Index v2 = vertex2_in_face(face_index);
+        Index v3 = vertex3_in_face(face_index);
+
+        root_visibility_array_[vertex_rootIndex_[v1]] = true;
+        root_visibility_array_[vertex_rootIndex_[v2]] = true;
+        root_visibility_array_[vertex_rootIndex_[v3]] = true;
+    }*/
+
+    /*INLINE bool root_is_visible(Index face_index)
+    {
+        Index v1 = vertex1_in_face(face_index);
+        Index v2 = vertex2_in_face(face_index);
+        Index v3 = vertex3_in_face(face_index);
+
+        if (root_visibility_array_[vertex_rootIndex_[v1]]||\
+            root_visibility_array_[vertex_rootIndex_[v2]]||\
+            root_visibility_array_[vertex_rootIndex_[v3]]
+                )
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }*/
+
+        
+
      /**
      * to see if this gfmesh is updated.
      * It is used in rendering part to avoid refreshing
@@ -345,7 +482,6 @@ public:
      * the mutex used to synchronize.
      */
     Poco::Mutex         mutex_;
-private:
     //to calculate the normal of the given face
     void  face_normal   (Index face_index);
     //to calculate the normal of the given vertex
@@ -353,13 +489,21 @@ private:
 
 private:
     std::vector<Coordinate>    vertex_array_;
-    std::vector<Index>         face_array_;
     std::vector<Normalf>       vertex_normal_array_;
-    std::vector<Normalf>       face_normal_array_;
     std::vector<unsigned int>  vertex_weight_array_;
+    std::vector<Index>         vertex_rootIndex_;
+    std::vector<Index>         vertex_root1Index_;
+    std::vector<Index>         vertex_root2Index_;
+    std::vector<int>           vertex_step_;
+    std::vector<Index>         vertex_parentIndex_;
+    //std::vector<Index>         vertex_currIndex_;
+    std::vector<int>           vertex_level_;
+    //std::vector<bool>          root_visibility_array_;
+    
+    std::vector<Index>         face_array_;
+    std::vector<Normalf>       face_normal_array_;
     std::vector<unsigned int>  face_weight_array_;
     std::vector<bool>          face_visibility_array_;
-    std::vector<VertexInfo*>    vertex_info_array_;
 
     bool                updated_;
     Ppmesh*             ppmesh_;

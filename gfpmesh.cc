@@ -16,7 +16,14 @@ Gfpmesh::Gfpmesh()
     face_weight_array_.reserve(2*RESERVE_SIZE);
     face_visibility_array_.reserve(2*RESERVE_SIZE);
 
-    vertex_info_array_.reserve(RESERVE_SIZE);
+    //vertex_currIndex_.reserve(RESERVE_SIZE);
+    vertex_rootIndex_.reserve(RESERVE_SIZE);
+    vertex_root1Index_.reserve(RESERVE_SIZE);
+    vertex_root2Index_.reserve(RESERVE_SIZE);
+    vertex_parentIndex_.reserve(RESERVE_SIZE);
+    vertex_level_.reserve(RESERVE_SIZE);
+    vertex_step_.reserve(RESERVE_SIZE);
+    //root_visibility_array_.reserve(2000);
 }
 
 Gfpmesh::Gfpmesh(Ppmesh* ppmesh)
@@ -31,7 +38,15 @@ Gfpmesh::Gfpmesh(Ppmesh* ppmesh)
     vertex_weight_array_.reserve(RESERVE_SIZE);
     face_weight_array_.reserve(2*RESERVE_SIZE);
     face_visibility_array_.reserve(2*RESERVE_SIZE);
-    vertex_info_array_.reserve(RESERVE_SIZE);
+    
+    //vertex_currIndex_.reserve(RESERVE_SIZE);
+    vertex_rootIndex_.reserve(RESERVE_SIZE);
+    vertex_root1Index_.reserve(RESERVE_SIZE);
+    vertex_root2Index_.reserve(RESERVE_SIZE);
+    vertex_parentIndex_.reserve(RESERVE_SIZE);
+    vertex_level_.reserve(RESERVE_SIZE);
+    vertex_step_.reserve(RESERVE_SIZE);
+    //root_visibility_array_.reserve(2000);
     
     ppmesh_->output_arrays(vertex_array_, face_array_);
     for (size_t i = 0; i< face_number(); i++)
@@ -50,7 +65,14 @@ Gfpmesh::Gfpmesh(Ppmesh* ppmesh)
         vertex_normal_array_.push_back(0);
         vertex_normal(i);
         vertex_weight_array_.push_back(0);
-        vertex_info_array_.push_back(new VertexInfo(i, i));
+        //vertex_currIndex_.push_back(i);
+        vertex_rootIndex_.push_back(i);
+        vertex_root1Index_.push_back(i);
+        vertex_root2Index_.push_back(i);
+        vertex_parentIndex_.push_back(i);
+        vertex_level_.push_back(1);
+        vertex_step_.push_back(3);
+        //root_visibility_array_.push_back(true);
     }
     updated_ = true;
 }
@@ -134,7 +156,13 @@ void Gfpmesh::collapse(Index v1)
     vertex_array_.resize(vertex_array_.size() - 3);
     vertex_normal_array_.resize(vertex_array_.size() - 3);
     vertex_weight_array_.resize(vertex_weight_array_.size() -1);
-    vertex_info_array_.resize(vertex_info_array_.size() - 1);
+    //vertex_currIndex_.resize(vertex_currIndex_.size() - 1);
+    vertex_rootIndex_.resize(vertex_rootIndex_.size() - 1);
+    vertex_root1Index_.resize(vertex_rootIndex_.size() - 1);
+    vertex_root2Index_.resize(vertex_rootIndex_.size() - 1);
+    vertex_parentIndex_.resize(vertex_parentIndex_.size() - 1);
+    vertex_level_.resize(vertex_level_.size() - 1);
+    vertex_step_.resize(vertex_step_.size() - 1);
 
     //remove the faces including v0
     bool find = false;
@@ -199,7 +227,27 @@ void Gfpmesh::vertex_split(Index v1, Index vl, Index vr, Coordinate x0, Coordina
     vertex_normal_array_.push_back(0);
     vertex_normal_array_.push_back(0);
     vertex_weight_array_.push_back(0);
-    vertex_info_array_.push_back(new VertexInfo(v0, vertex_info_array_[v1]->rootIndex));
+    //vertex_currIndex_.push_back(v0);
+    vertex_rootIndex_.push_back(vertex_rootIndex_[v1]);
+    vertex_parentIndex_.push_back(v1);
+    vertex_level_.push_back(vertex_level_[v1]+1);
+    if(vertex_level_[v1] >= 10)
+    {
+        vertex_root1Index_.push_back(vertex_root1Index_[v1]);
+    }
+    else
+    {
+        vertex_root1Index_.push_back(v0);
+    }
+    if(vertex_level_[v1] >= 20)
+    {
+        vertex_root2Index_.push_back(vertex_root2Index_[v1]);
+    }
+    else
+    {
+        vertex_root2Index_.push_back(v0);
+    }
+    vertex_step_.push_back(3);
 
     //std::vector<Index> faces;
     Index faces[MAX_VERTEX_FACE];

@@ -113,6 +113,7 @@ private:
     bool recheck_visibility_;
     bool to_output_;
     bool isStopped_;
+    bool showBase_;
     Logger& logger_;
 };
 #endif

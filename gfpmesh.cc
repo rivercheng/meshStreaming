@@ -15,6 +15,8 @@ Gfpmesh::Gfpmesh()
     vertex_weight_array_.reserve(RESERVE_SIZE);
     face_weight_array_.reserve(2*RESERVE_SIZE);
     face_visibility_array_.reserve(2*RESERVE_SIZE);
+    base_face_array_.reserve(10000);
+    base_face_normal_array_.reserve(10000);
 
     //vertex_currIndex_.reserve(RESERVE_SIZE);
     vertex_rootIndex_.reserve(RESERVE_SIZE);
@@ -38,6 +40,8 @@ Gfpmesh::Gfpmesh(Ppmesh* ppmesh)
     vertex_weight_array_.reserve(RESERVE_SIZE);
     face_weight_array_.reserve(2*RESERVE_SIZE);
     face_visibility_array_.reserve(2*RESERVE_SIZE);
+    base_face_array_.reserve(10000);
+    base_face_normal_array_.reserve(10000);
     
     //vertex_currIndex_.reserve(RESERVE_SIZE);
     vertex_rootIndex_.reserve(RESERVE_SIZE);
@@ -57,6 +61,10 @@ Gfpmesh::Gfpmesh(Ppmesh* ppmesh)
         face_normal(i);
         face_weight_array_.push_back(0);
         face_visibility_array_.push_back(true);
+        base_face_array_.push_back(face_array_[3*i]);
+        base_face_array_.push_back(face_array_[3*i+1]);
+        base_face_array_.push_back(face_array_[3*i+2]);
+        base_face_normal(i);
     }
     for (size_t i = 0; i< vertex_number(); i++)
     {
@@ -124,6 +132,52 @@ void Gfpmesh::face_normal(Index face_index)
     return;
 }
 
+void Gfpmesh::base_face_normal(Index face_index)
+{
+    if (face_index >= static_cast<Index>(base_face_array_.size() / 3))
+    {
+        //std::cerr<<face_index<<">="<<face_array_.size()/3<<std::endl;
+        throw InvalidFaceIndex();
+    }
+    Index v1 = base_face_array_[3*face_index];
+    Index v2 = base_face_array_[3*face_index+1];
+    Index v3 = base_face_array_[3*face_index+2];
+
+    Coordinate x1 = vertex_array_[3*v1];
+    Coordinate x2 = vertex_array_[3*v2];
+    Coordinate x3 = vertex_array_[3*v3];
+
+    Coordinate y1 = vertex_array_[3*v1+1];
+    Coordinate y2 = vertex_array_[3*v2+1];
+    Coordinate y3 = vertex_array_[3*v3+1];
+
+    Coordinate z1 = vertex_array_[3*v1+2];
+    Coordinate z2 = vertex_array_[3*v2+2];
+    Coordinate z3 = vertex_array_[3*v3+2];
+
+    // vector (v2 - v1) = a1*i + a2*j + a3*k
+    double a1 = static_cast<double>(x2) - static_cast<double>(x1);
+    double a2 = static_cast<double>(y2) - static_cast<double>(y1);
+    double a3 = static_cast<double>(z2) - static_cast<double>(z1);
+
+    // vector (v3 - v1) = b1*i + b2*j + b3*k
+    double b1 = static_cast<double>(x3) - static_cast<double>(x1);
+    double b2 = static_cast<double>(y3) - static_cast<double>(y1);
+    double b3 = static_cast<double>(z3) - static_cast<double>(z1);
+
+    //normal = (v2-v1) x (v3-v1) = (a2*b3 - a3*b2)i
+    //                             (a3*b1 - a1*b3)j
+    //                             (a1*b2 - a2*b1)k
+    Normalf v_x = static_cast<Normalf>(a2*b3 - a3*b2);
+    Normalf v_y = static_cast<Normalf>(a3*b1 - a1*b3);
+    Normalf v_z = static_cast<Normalf>(a1*b2 - a2*b1);
+
+
+    base_face_normal_array_[3*face_index] = v_x;
+    base_face_normal_array_[3*face_index+1] = v_y;
+    base_face_normal_array_[3*face_index+2] = v_z;
+    return;
+}
 void Gfpmesh::vertex_normal(Index vertex_index)
 {
     //std::vector<Index> faces;
@@ -231,7 +285,7 @@ void Gfpmesh::vertex_split(Index v1, Index vl, Index vr, Coordinate x0, Coordina
     vertex_rootIndex_.push_back(vertex_rootIndex_[v1]);
     vertex_parentIndex_.push_back(v1);
     vertex_level_.push_back(vertex_level_[v1]+1);
-    if(vertex_level_[v1] >= 10)
+    if(vertex_level_[v1] >= 5)
     {
         vertex_root1Index_.push_back(vertex_root1Index_[v1]);
     }
@@ -239,7 +293,7 @@ void Gfpmesh::vertex_split(Index v1, Index vl, Index vr, Coordinate x0, Coordina
     {
         vertex_root1Index_.push_back(v0);
     }
-    if(vertex_level_[v1] >= 20)
+    if(vertex_level_[v1] >= 10)
     {
         vertex_root2Index_.push_back(vertex_root2Index_[v1]);
     }

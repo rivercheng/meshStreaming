@@ -146,6 +146,25 @@ public:
         assert(faceIndex < face_array_.size());
         return face_array_[faceIndex*3+2];
     }
+    
+    INLINE Index vertex1_in_base_face(Index faceIndex) const
+    {
+        assert(faceIndex < base_face_array_.size());
+        return base_face_array_[faceIndex*3];
+    }
+
+    INLINE Index vertex2_in_base_face(Index faceIndex) const
+    {
+        assert(faceIndex < base_face_array_.size());
+        return base_face_array_[faceIndex*3+1];
+    }
+
+
+    INLINE Index vertex3_in_base_face(Index faceIndex) const
+    {
+        assert(faceIndex < base_face_array_.size());
+        return base_face_array_[faceIndex*3+2];
+    }
     /**
      * Return the address of face array.
      */
@@ -171,6 +190,13 @@ public:
     }
 
     /**
+     * return the base face normal array.
+     */
+    INLINE const std::vector<Normalf>&    base_face_normal_array(void)   const
+    {
+        return base_face_normal_array_;
+    }
+    /**
      * return the vertex number.
      */
     INLINE size_t vertex_number    (void) const
@@ -186,6 +212,13 @@ public:
         return face_array_.size()/3;
     }
 
+    /**
+     * return the base mesh face number.
+     */
+    INLINE size_t base_face_number      (void) const
+    {
+        return base_face_array_.size()/3;
+    }
     /**
      * return the size of vertex array.
      */
@@ -305,14 +338,14 @@ public:
            case 3:
                return v_index;
                break;
-           case 2:
-               return vertex_root2Index_[v_index];
+           case 0:
+               return vertex_rootIndex_[v_index];
                break;
            case 1:
                return vertex_root1Index_[v_index];
                break;
-           case 0:
-               return vertex_rootIndex_[v_index];
+           case 2:
+               return vertex_root2Index_[v_index];
                break;
            default:
                std::cerr<<"wrong step"<<std::endl;
@@ -340,14 +373,15 @@ public:
     {
         assert(step >= 0);
         assert(step <= 3);
-        vertex_step_[v_i] = step;
-        Index i = v_i;
-        while(vertex_parentIndex_[i] != i)
-        {
-            i = vertex_parentIndex_[i];
-            vertex_step_[i] = step;
-        }
-        vertex_step_[i] = step;
+        vertex_step_[vertex_rootIndex_[v_i]] = step;
+        //vertex_step_[v_i] = step;
+        //Index i = v_i;
+        //while(vertex_parentIndex_[i] != i)
+        //{
+        //    i = vertex_parentIndex_[i];
+        //    vertex_step_[i] = step;
+        //}
+        //vertex_step_[i] = step;
         /*
         Index i = v_i;
         while(vertex_level_[i] > level)
@@ -484,6 +518,7 @@ public:
     Poco::Mutex         mutex_;
     //to calculate the normal of the given face
     void  face_normal   (Index face_index);
+    void  base_face_normal   (Index face_index);
     //to calculate the normal of the given vertex
     void  vertex_normal (Index vertex_index);
 
@@ -501,7 +536,9 @@ private:
     //std::vector<bool>          root_visibility_array_;
     
     std::vector<Index>         face_array_;
+    std::vector<Index>         base_face_array_;
     std::vector<Normalf>       face_normal_array_;
+    std::vector<Normalf>       base_face_normal_array_;
     std::vector<unsigned int>  face_weight_array_;
     std::vector<bool>          face_visibility_array_;
 

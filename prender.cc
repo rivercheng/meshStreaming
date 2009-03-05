@@ -199,17 +199,19 @@ void draw_surface_with_arrays()
         gfmesh_->reset_visibility(true);
         log_view_parameter();
         gfmesh_->collapse();
+        gfmesh_->reset_visibility(true);
         //gfmesh_->reset_root_visibility();
         //quick_check_visibility(1);
         //quick_check_visibility(2);
         //quick_check_visibility(1);
-        quick_check_visibility(3);
+        quick_check_visibility(1);
         //check_visibility();
         render_->setCheck(false);
     }
     if (render_->recheck_visibility_ && render_->visible_pq_ != NULL)
     {
         //TODO render_->logger_.log("recheck visibility");
+        gfmesh_->reset_visibility(true);
         check_visibility();
         render_->setRecheck(false);
     }
@@ -226,8 +228,8 @@ void draw_surface_with_arrays()
         assert(gfmesh_->face_number()*3 == gfmesh_->face_array_size());
         for (size_t i=0; i< gfmesh_->face_number(); i++)
         {
-            //if (gfmesh_->is_visible(i)) //only render visible triangles
-            //{
+            if (gfmesh_->is_visible(i)) //only render visible triangles
+            {
                 glNormal3d(gfmesh_->face_normal_array()[3*i], gfmesh_->face_normal_array()[3*i+1], gfmesh_->face_normal_array()[3*i+2]);
                 Index v1 = (gfmesh_->curr_index(gfmesh_->vertex1_in_face(i)));
                 Index v2 = (gfmesh_->curr_index(gfmesh_->vertex2_in_face(i)));
@@ -241,7 +243,11 @@ void draw_surface_with_arrays()
                     glArrayElement(v2);
                     glArrayElement(v3);
                 }
-            //}
+                else
+                {
+                    gfmesh_->set_visibility(i, false);
+                }
+            }
         }
         glEnd();
     }

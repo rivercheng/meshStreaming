@@ -285,7 +285,7 @@ void Gfpmesh::vertex_split(Index v1, Index vl, Index vr, Coordinate x0, Coordina
     vertex_rootIndex_.push_back(vertex_rootIndex_[v1]);
     vertex_parentIndex_.push_back(v1);
     vertex_level_.push_back(vertex_level_[v1]+1);
-    if(vertex_level_[v1] >= 5)
+    if(vertex_level_[v1] >= 4)
     {
         vertex_root1Index_.push_back(vertex_root1Index_[v1]);
     }
@@ -293,7 +293,7 @@ void Gfpmesh::vertex_split(Index v1, Index vl, Index vr, Coordinate x0, Coordina
     {
         vertex_root1Index_.push_back(v0);
     }
-    if(vertex_level_[v1] >= 10)
+    if(vertex_level_[v1] >= 5)
     {
         vertex_root2Index_.push_back(vertex_root2Index_[v1]);
     }

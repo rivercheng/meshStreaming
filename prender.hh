@@ -20,7 +20,7 @@ class PRender
     friend void motion(int x, int y);
     friend void timer(int value);
     friend void log_view_parameter();
-    friend void check_visibility();
+    friend void check_visibility(int step);
     friend void check_visibility2();
     friend void quick_check_visibility(int step);
 

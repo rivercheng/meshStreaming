@@ -329,10 +329,14 @@ public:
     /**
      * Return the currIndex of a given vertex index.
      */
-    INLINE Index curr_index(Index v_index)
+    INLINE Index curr_index(Index v_index, int step2=3)
     {
         //int step = vertex_step_[v_index];
         int step = vertex_step_[vertex_rootIndex_[v_index]];
+        if (step > step2)
+        {
+            step = step2;
+        }
         switch(step)
         {
            case 3:
@@ -341,11 +345,11 @@ public:
            case 0:
                return vertex_rootIndex_[v_index];
                break;
-           case 1:
-               return vertex_root1Index_[v_index];
-               break;
            case 2:
                return vertex_root2Index_[v_index];
+               break;
+           case 1:
+               return vertex_root1Index_[v_index];
                break;
            default:
                std::cerr<<"wrong step"<<std::endl;
@@ -521,6 +525,38 @@ public:
     void  base_face_normal   (Index face_index);
     //to calculate the normal of the given vertex
     void  vertex_normal (Index vertex_index);
+
+    INLINE void  compute_normal (Index v1, Index v2, Index v3, Normalf* p_n1, Normalf* p_n2, Normalf* p_n3)
+    {
+        Coordinate x1 = vertex_array_[3*v1];
+        Coordinate x2 = vertex_array_[3*v2];
+        Coordinate x3 = vertex_array_[3*v3];
+
+        Coordinate y1 = vertex_array_[3*v1+1];
+        Coordinate y2 = vertex_array_[3*v2+1];
+        Coordinate y3 = vertex_array_[3*v3+1];
+
+        Coordinate z1 = vertex_array_[3*v1+2];
+        Coordinate z2 = vertex_array_[3*v2+2];
+        Coordinate z3 = vertex_array_[3*v3+2];
+    
+        // vector (v2 - v1) = a1*i + a2*j + a3*k
+        double a1 = static_cast<double>(x2) - static_cast<double>(x1);
+        double a2 = static_cast<double>(y2) - static_cast<double>(y1);
+        double a3 = static_cast<double>(z2) - static_cast<double>(z1);
+
+        // vector (v3 - v1) = b1*i + b2*j + b3*k
+        double b1 = static_cast<double>(x3) - static_cast<double>(x1);
+        double b2 = static_cast<double>(y3) - static_cast<double>(y1);
+        double b3 = static_cast<double>(z3) - static_cast<double>(z1);
+
+        //normal = (v2-v1) x (v3-v1) = (a2*b3 - a3*b2)i
+        //                             (a3*b1 - a1*b3)j
+        //                             (a1*b2 - a2*b1)k
+        *p_n1 = static_cast<Normalf>(a2*b3 - a3*b2);
+        *p_n2 = static_cast<Normalf>(a3*b1 - a1*b3);
+        *p_n3 = static_cast<Normalf>(a1*b2 - a2*b1);
+    }
 
 private:
     std::vector<Coordinate>    vertex_array_;

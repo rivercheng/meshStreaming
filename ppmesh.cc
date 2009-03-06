@@ -25,7 +25,7 @@
 #include <OpenMesh/Core/Utils/Endian.hh>
 // --------------------
 #include "ppmesh.hh"
-#include "gfpmesh.hh"
+#include "gfmesh.hh"
 #include "huffman.hh"
 #include "bitstring.hh"
 // --------------------
@@ -212,7 +212,7 @@ Ppmesh::readPM(std::istream& ifs, bool readDetail)
 
     if (needGfmesh_)
     {
-        gfmesh_ = new Gfpmesh(this);
+        gfmesh_ = new Gfmesh(this);
         assert(gfmesh_);
     }
 
@@ -484,7 +484,7 @@ void Ppmesh::restoreFromFile(std::istream& is)
     coarsen(0);
     if (gfmesh_) delete gfmesh_;
     gfmesh_ = 0;
-    gfmesh_ = new Gfpmesh(this);
+    gfmesh_ = new Gfmesh(this);
     assert(gfmesh_);
     while (!is.eof())
     {

@@ -4,7 +4,7 @@
 #include "Poco/Mutex.h"
 
 
-VisiblePQ::VisiblePQ(Ppmesh* ppmesh, Gfpmesh* gfmesh)
+VisiblePQ::VisiblePQ(Ppmesh* ppmesh, Gfmesh* gfmesh)
         :toContinue_(true), isStrict_(true), \
         pixels_(0), size_(0) //ppmesh_(ppmesh), gfmesh_(gfmesh)
 {
@@ -17,7 +17,7 @@ VisiblePQ::VisiblePQ(Ppmesh* ppmesh, Gfpmesh* gfmesh)
 
 void VisiblePQ::stat_screen_area()
 {
-    Gfpmesh* gfmesh = gfmesh_;
+    Gfmesh* gfmesh = gfmesh_;
     //clear weight
     gfmesh->clear_weight();
     for (size_t i = 0; i < size_; i+=3)

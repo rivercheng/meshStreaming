@@ -1,11 +1,11 @@
 #include <GL/glut.h>
 #include "view.hh"
-#include "gfpmesh.hh"
+#include "gfmesh.hh"
 const size_t SIZE = 1024*768*3;
 unsigned char pixels_[SIZE] = {0};
 void View::disp()
 {
-    Gfpmesh* gfmesh = ppmesh_->gfmesh();
+    Gfmesh* gfmesh = ppmesh_->gfmesh();
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     glShadeModel(GL_FLAT);
     glPushMatrix();
@@ -116,7 +116,7 @@ void View::initiateView()
     final_image_ = generateImage();
     restore();
     initial_image_ = generateImage();
-    Gfpmesh* gfmesh = ppmesh_->gfmesh();
+    Gfmesh* gfmesh = ppmesh_->gfmesh();
 
 
 

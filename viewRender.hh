@@ -1,6 +1,6 @@
 #ifndef __VIEW_RENDER_HH__
 #define __VIEW_RENDER_HH__
-#include "gfpmesh.hh"
+#include "gfmesh.hh"
 
 class ViewRender
 {
@@ -13,7 +13,7 @@ class ViewRender
     friend void motion(int x, int y);
 
 public:
-    ViewRender(int& argc, char* argv[], const char* name, Gfpmesh* gfmesh);
+    ViewRender(int& argc, char* argv[], const char* name, Gfmesh* gfmesh);
     void enterMainLoop();
 
     void setSmooth(bool value)
@@ -55,7 +55,7 @@ private:
 
 
 private:
-    Gfpmesh* gfmesh_;
+    Gfmesh* gfmesh_;
     double view_angle_;
     double left_distance_;
     double right_distance_;

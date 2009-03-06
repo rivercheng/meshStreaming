@@ -1,12 +1,12 @@
 LIBRARY = -lOpenMesh_Core -lOpenMesh_Tools -lPocoFoundation -lPocoNet -lPocoUtil -lglut #-lprofiler	
 OPTIONS =  -Wall -g -O2 
-BASE = bitstring.o ppmesh.o vertexid.o gfpmesh.o packetid.o
+BASE = bitstring.o ppmesh.o vertexid.o gfmesh.o packetid.o
 DISPLAY = render.o visiblepq.o view.o
 STREAM = receiver.o
 PDISPLAY = prender.o pvisiblepq.o view.o 
 PSTREAM = preceiver.o
-OBJECTS = bitstring.o ppmesh.o vertexid.o gfpmesh.o render.o receiver.o visiblepq.o 
-OBJECTS2 = bitstring.o ppmesh.o vertexid.o gfpmesh.o prender.o preceiver.o pvisiblepq.o packetid.o view.o
+OBJECTS = bitstring.o ppmesh.o vertexid.o gfmesh.o render.o receiver.o visiblepq.o 
+OBJECTS2 = bitstring.o ppmesh.o vertexid.o gfmesh.o prender.o preceiver.o pvisiblepq.o packetid.o view.o
 CC = g++
 CTAG = ctags
 ALL = mkbalancedpm display server client encode decode packetizer pserver pclient packetinfo testview testsplit pm32to64 viewer testroot
@@ -44,8 +44,8 @@ testsplit: testsplit.cc $(BASE) view.o
 	$(CC) $(OPTIONS) $(LIBRARY) -o $@ $< $(BASE) view.o
 pm32to64: pm32to64.cc $(BASE)
 	$(CC) $(OPTIONS) $(LIBRARY) -o $@ $< $(BASE)
-viewer: viewer.cc gfpmesh.o viewRender.o
-	$(CC) $(OPTIONS) $(LIBRARY) -o $@ $< gfpmesh.o viewRender.o
+viewer: viewer.cc gfmesh.o viewRender.o
+	$(CC) $(OPTIONS) $(LIBRARY) -o $@ $< gfmesh.o viewRender.o
 testroot:testroot.cc $(BASE)
 	$(CC) $(OPTIONS) $(LIBRARY) -o $@ $< $(BASE)
 clean:
@@ -209,7 +209,7 @@ client.o: /usr/include/GL/gl.h /usr/include/GL/glext.h
 client.o: /usr/include/inttypes.h /usr/include/GL/glu.h
 client.o: /usr/include/Poco/ThreadPool.h bitstring.hh huffman.hh vertexid.hh
 client.o: commonType.hh render.hh visiblepq.hh
-client.o: /usr/include/Poco/RunnableAdapter.h gfpmesh.hh receiver.hh
+client.o: /usr/include/Poco/RunnableAdapter.h gfmesh.hh receiver.hh
 decode.o: ppmesh.hh
 decode.o: /usr/include/OpenMesh/Core/Mesh/Types/TriMesh_ArrayKernelT.hh
 decode.o: /usr/include/OpenMesh/Core/System/config.hh /usr/include/assert.h
@@ -1029,7 +1029,7 @@ ppmesh.o: /usr/include/Poco/Event.h /usr/include/Poco/Event_POSIX.h
 ppmesh.o: /usr/include/Poco/RefCountedObject.h /usr/include/Poco/AutoPtr.h
 ppmesh.o: /usr/include/sys/select.h /usr/include/bits/select.h
 ppmesh.o: /usr/include/bits/time.h /usr/include/Poco/ThreadPool.h
-ppmesh.o: bitstring.hh huffman.hh vertexid.hh commonType.hh gfpmesh.hh
+ppmesh.o: bitstring.hh huffman.hh vertexid.hh commonType.hh gfmesh.hh
 ppmesh.o: logger.hh /usr/include/sys/time.h packetid.hh
 preceiver.o: /usr/include/Poco/Net/StreamSocket.h /usr/include/Poco/Net/Net.h
 preceiver.o: /usr/include/Poco/Foundation.h /usr/include/Poco/Config.h
@@ -1192,7 +1192,7 @@ prender.o: /usr/include/sys/select.h /usr/include/bits/select.h
 prender.o: /usr/include/bits/time.h /usr/include/Poco/ThreadPool.h
 prender.o: bitstring.hh huffman.hh vertexid.hh commonType.hh pvisiblepq.hh
 prender.o: /usr/include/Poco/RunnableAdapter.h packetid.hh logger.hh
-prender.o: /usr/include/sys/time.h gfpmesh.hh
+prender.o: /usr/include/sys/time.h gfmesh.hh
 pserver.o: /usr/include/Poco/Net/TCPServer.h /usr/include/Poco/Net/Net.h
 pserver.o: /usr/include/Poco/Foundation.h /usr/include/Poco/Config.h
 pserver.o: /usr/include/Poco/Platform.h /usr/include/Poco/Platform_POSIX.h
@@ -1366,7 +1366,7 @@ pvisiblepq.o: /usr/include/OpenMesh/Core/IO/SR_binary.hh
 pvisiblepq.o: /usr/include/OpenMesh/Core/Mesh/Kernels/ArrayKernel/ArrayItems.hh
 pvisiblepq.o: /usr/include/OpenMesh/Core/Mesh/Kernels/Common/FinalMeshItemsT.hh
 pvisiblepq.o: huffman.hh commonType.hh packetid.hh logger.hh
-pvisiblepq.o: /usr/include/sys/time.h gfpmesh.hh
+pvisiblepq.o: /usr/include/sys/time.h gfmesh.hh
 receiver.o: /usr/include/Poco/Net/StreamSocket.h /usr/include/Poco/Net/Net.h
 receiver.o: /usr/include/Poco/Foundation.h /usr/include/Poco/Config.h
 receiver.o: /usr/include/Poco/Platform.h /usr/include/Poco/Platform_POSIX.h
@@ -1458,7 +1458,7 @@ receiver.o: /usr/include/setjmp.h /usr/include/Poco/Event.h
 receiver.o: /usr/include/Poco/Event_POSIX.h /usr/include/Poco/AutoPtr.h
 receiver.o: /usr/include/Poco/ThreadPool.h bitstring.hh huffman.hh
 receiver.o: vertexid.hh commonType.hh receiver.hh visiblepq.hh
-receiver.o: /usr/include/Poco/RunnableAdapter.h gfpmesh.hh render.hh
+receiver.o: /usr/include/Poco/RunnableAdapter.h gfmesh.hh render.hh
 render.o: /usr/include/GL/glut.h /usr/include/GL/freeglut_std.h
 render.o: /usr/include/GL/gl.h /usr/include/GL/glext.h
 render.o: /usr/include/inttypes.h /usr/include/features.h
@@ -1524,7 +1524,7 @@ render.o: /usr/include/Poco/RefCountedObject.h /usr/include/Poco/AutoPtr.h
 render.o: /usr/include/sys/select.h /usr/include/bits/select.h
 render.o: /usr/include/bits/time.h /usr/include/Poco/ThreadPool.h
 render.o: bitstring.hh huffman.hh vertexid.hh commonType.hh visiblepq.hh
-render.o: /usr/include/Poco/RunnableAdapter.h gfpmesh.hh
+render.o: /usr/include/Poco/RunnableAdapter.h gfmesh.hh
 server.o: /usr/include/Poco/Net/TCPServer.h /usr/include/Poco/Net/Net.h
 server.o: /usr/include/Poco/Foundation.h /usr/include/Poco/Config.h
 server.o: /usr/include/Poco/Platform.h /usr/include/Poco/Platform_POSIX.h
@@ -1761,7 +1761,7 @@ testsplit.o: /usr/include/Poco/Event.h /usr/include/Poco/Event_POSIX.h
 testsplit.o: /usr/include/Poco/RefCountedObject.h /usr/include/Poco/AutoPtr.h
 testsplit.o: /usr/include/sys/select.h /usr/include/bits/select.h
 testsplit.o: /usr/include/bits/time.h /usr/include/Poco/ThreadPool.h
-testsplit.o: bitstring.hh huffman.hh vertexid.hh commonType.hh gfpmesh.hh
+testsplit.o: bitstring.hh huffman.hh vertexid.hh commonType.hh gfmesh.hh
 testview.o: /usr/include/GL/glut.h /usr/include/GL/freeglut_std.h
 testview.o: /usr/include/GL/gl.h /usr/include/GL/glext.h
 testview.o: /usr/include/inttypes.h /usr/include/features.h
@@ -1826,7 +1826,7 @@ testview.o: /usr/include/Poco/Event.h /usr/include/Poco/Event_POSIX.h
 testview.o: /usr/include/Poco/RefCountedObject.h /usr/include/Poco/AutoPtr.h
 testview.o: /usr/include/sys/select.h /usr/include/bits/select.h
 testview.o: /usr/include/bits/time.h /usr/include/Poco/ThreadPool.h
-testview.o: bitstring.hh huffman.hh vertexid.hh commonType.hh gfpmesh.hh
+testview.o: bitstring.hh huffman.hh vertexid.hh commonType.hh gfmesh.hh
 vertexid.o: vertexid.hh bitstring.hh
 vertexid.sav.o: vertexid.hh bitstring.hh
 view.o: /usr/include/GL/glut.h /usr/include/GL/freeglut_std.h
@@ -1891,25 +1891,72 @@ view.o: /usr/include/Poco/Event.h /usr/include/Poco/Event_POSIX.h
 view.o: /usr/include/Poco/RefCountedObject.h /usr/include/Poco/AutoPtr.h
 view.o: /usr/include/sys/select.h /usr/include/bits/select.h
 view.o: /usr/include/bits/time.h /usr/include/Poco/ThreadPool.h bitstring.hh
-view.o: huffman.hh vertexid.hh commonType.hh gfpmesh.hh
-viewer.o: gfpmesh.hh /usr/include/Poco/Mutex.h /usr/include/Poco/Foundation.h
+view.o: huffman.hh vertexid.hh commonType.hh gfmesh.hh
+viewer.o: gfmesh.hh
+viewer.o: /usr/include/OpenMesh/Core/Mesh/Types/TriMesh_ArrayKernelT.hh
+viewer.o: /usr/include/OpenMesh/Core/System/config.hh /usr/include/assert.h
+viewer.o: /usr/include/features.h /usr/include/sys/cdefs.h
+viewer.o: /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h
+viewer.o: /usr/include/gnu/stubs-32.h
+viewer.o: /usr/include/OpenMesh/Core/System/compiler.hh
+viewer.o: /usr/include/OpenMesh/Core/Mesh/TriMeshT.hh
+viewer.o: /usr/include/OpenMesh/Core/Mesh/PolyMeshT.hh
+viewer.o: /usr/include/OpenMesh/Core/Mesh/BaseMesh.hh
+viewer.o: /usr/include/OpenMesh/Core/Mesh/Iterators/IteratorsT.hh
+viewer.o: /usr/include/OpenMesh/Core/Attributes/Status.hh
+viewer.o: /usr/include/OpenMesh/Core/Mesh/Iterators/CirculatorsT.hh
+viewer.o: /usr/include/OpenMesh/Core/Attributes/Attributes.hh
+viewer.o: /usr/include/OpenMesh/Core/Math/MathDefs.hh /usr/include/math.h
+viewer.o: /usr/include/bits/huge_val.h /usr/include/bits/mathdef.h
+viewer.o: /usr/include/bits/mathcalls.h
+viewer.o: /usr/include/OpenMesh/Core/Mesh/PolyMeshT.cc
+viewer.o: /usr/include/OpenMesh/Core/Math/LoopSchemeMaskT.hh
+viewer.o: /usr/include/OpenMesh/Core/Utils/SingletonT.hh
+viewer.o: /usr/include/OpenMesh/Core/Utils/SingletonT.cc
+viewer.o: /usr/include/OpenMesh/Core/Utils/vector_cast.hh
+viewer.o: /usr/include/OpenMesh/Core/Utils/vector_traits.hh
+viewer.o: /usr/include/OpenMesh/Core/Utils/GenProg.hh
+viewer.o: /usr/include/OpenMesh/Core/Math/VectorT.hh
+viewer.o: /usr/include/OpenMesh/Core/Math/VectorT_inc.hh
+viewer.o: /usr/include/OpenMesh/Core/System/omstream.hh
+viewer.o: /usr/include/OpenMesh/Core/System/mostream.hh
+viewer.o: /usr/include/OpenMesh/Core/Mesh/PolyMeshT_assign.hh
+viewer.o: /usr/include/OpenMesh/Core/Mesh/TriMeshT.cc
+viewer.o: /usr/include/OpenMesh/Core/Mesh/Traits.hh
+viewer.o: /usr/include/OpenMesh/Core/Mesh/Kernels/Common/Handles.hh
+viewer.o: /usr/include/OpenMesh/Core/Mesh/Kernels/ArrayKernel/ArrayKernelT.hh
+viewer.o: /usr/include/OpenMesh/Core/Mesh/Kernels/Common/AttribKernelT.hh
+viewer.o: /usr/include/OpenMesh/Core/Mesh/Kernels/Common/BaseKernel.hh
+viewer.o: /usr/include/OpenMesh/Core/Utils/Property.hh
+viewer.o: /usr/include/OpenMesh/Core/IO/StoreRestore.hh
+viewer.o: /usr/include/OpenMesh/Core/IO/SR_binary.hh
+viewer.o: /usr/include/OpenMesh/Core/Mesh/Kernels/ArrayKernel/ArrayItems.hh
+viewer.o: /usr/include/OpenMesh/Core/Mesh/Kernels/Common/FinalMeshItemsT.hh
+viewer.o: /usr/include/Poco/Mutex.h /usr/include/Poco/Foundation.h
 viewer.o: /usr/include/Poco/Config.h /usr/include/Poco/Platform.h
 viewer.o: /usr/include/Poco/Platform_POSIX.h /usr/include/Poco/Bugcheck.h
 viewer.o: /usr/include/Poco/Types.h /usr/include/Poco/Exception.h
 viewer.o: /usr/include/Poco/ScopedLock.h /usr/include/Poco/Mutex_POSIX.h
-viewer.o: /usr/include/pthread.h /usr/include/features.h
-viewer.o: /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h
-viewer.o: /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h
-viewer.o: /usr/include/endian.h /usr/include/bits/endian.h
-viewer.o: /usr/include/sched.h /usr/include/bits/types.h
-viewer.o: /usr/include/bits/typesizes.h /usr/include/time.h
-viewer.o: /usr/include/bits/sched.h /usr/include/signal.h
+viewer.o: /usr/include/pthread.h /usr/include/endian.h
+viewer.o: /usr/include/bits/endian.h /usr/include/sched.h
+viewer.o: /usr/include/bits/types.h /usr/include/bits/typesizes.h
+viewer.o: /usr/include/time.h /usr/include/bits/sched.h /usr/include/signal.h
 viewer.o: /usr/include/bits/sigset.h /usr/include/bits/pthreadtypes.h
 viewer.o: /usr/include/bits/setjmp.h /usr/include/errno.h
 viewer.o: /usr/include/bits/errno.h /usr/include/linux/errno.h
 viewer.o: /usr/include/asm/errno.h /usr/include/asm-generic/errno.h
-viewer.o: /usr/include/asm-generic/errno-base.h vertexid.hh bitstring.hh
-viewer.o: commonType.hh viewRender.hh
+viewer.o: /usr/include/asm-generic/errno-base.h /usr/include/GL/glut.h
+viewer.o: /usr/include/GL/freeglut_std.h /usr/include/GL/gl.h
+viewer.o: /usr/include/GL/glext.h /usr/include/inttypes.h
+viewer.o: /usr/include/stdint.h /usr/include/bits/wchar.h
+viewer.o: /usr/include/GL/glu.h /usr/include/Poco/Thread.h
+viewer.o: /usr/include/Poco/Thread_POSIX.h /usr/include/Poco/Runnable.h
+viewer.o: /usr/include/Poco/SignalHandler.h /usr/include/setjmp.h
+viewer.o: /usr/include/Poco/Event.h /usr/include/Poco/Event_POSIX.h
+viewer.o: /usr/include/Poco/RefCountedObject.h /usr/include/Poco/AutoPtr.h
+viewer.o: /usr/include/sys/select.h /usr/include/bits/select.h
+viewer.o: /usr/include/bits/time.h /usr/include/Poco/ThreadPool.h
+viewer.o: bitstring.hh huffman.hh vertexid.hh commonType.hh viewRender.hh
 viewRender.o: /usr/include/GL/glut.h /usr/include/GL/freeglut_std.h
 viewRender.o: /usr/include/GL/gl.h /usr/include/GL/glext.h
 viewRender.o: /usr/include/inttypes.h /usr/include/features.h
@@ -1930,8 +1977,53 @@ viewRender.o: /usr/include/bits/sigset.h /usr/include/bits/pthreadtypes.h
 viewRender.o: /usr/include/bits/setjmp.h /usr/include/errno.h
 viewRender.o: /usr/include/bits/errno.h /usr/include/linux/errno.h
 viewRender.o: /usr/include/asm/errno.h /usr/include/asm-generic/errno.h
-viewRender.o: /usr/include/asm-generic/errno-base.h viewRender.hh gfpmesh.hh
-viewRender.o: vertexid.hh bitstring.hh commonType.hh
+viewRender.o: /usr/include/asm-generic/errno-base.h viewRender.hh gfmesh.hh
+viewRender.o: /usr/include/OpenMesh/Core/Mesh/Types/TriMesh_ArrayKernelT.hh
+viewRender.o: /usr/include/OpenMesh/Core/System/config.hh
+viewRender.o: /usr/include/assert.h
+viewRender.o: /usr/include/OpenMesh/Core/System/compiler.hh
+viewRender.o: /usr/include/OpenMesh/Core/Mesh/TriMeshT.hh
+viewRender.o: /usr/include/OpenMesh/Core/Mesh/PolyMeshT.hh
+viewRender.o: /usr/include/OpenMesh/Core/Mesh/BaseMesh.hh
+viewRender.o: /usr/include/OpenMesh/Core/Mesh/Iterators/IteratorsT.hh
+viewRender.o: /usr/include/OpenMesh/Core/Attributes/Status.hh
+viewRender.o: /usr/include/OpenMesh/Core/Mesh/Iterators/CirculatorsT.hh
+viewRender.o: /usr/include/OpenMesh/Core/Attributes/Attributes.hh
+viewRender.o: /usr/include/OpenMesh/Core/Math/MathDefs.hh /usr/include/math.h
+viewRender.o: /usr/include/bits/huge_val.h /usr/include/bits/mathdef.h
+viewRender.o: /usr/include/bits/mathcalls.h
+viewRender.o: /usr/include/OpenMesh/Core/Mesh/PolyMeshT.cc
+viewRender.o: /usr/include/OpenMesh/Core/Math/LoopSchemeMaskT.hh
+viewRender.o: /usr/include/OpenMesh/Core/Utils/SingletonT.hh
+viewRender.o: /usr/include/OpenMesh/Core/Utils/SingletonT.cc
+viewRender.o: /usr/include/OpenMesh/Core/Utils/vector_cast.hh
+viewRender.o: /usr/include/OpenMesh/Core/Utils/vector_traits.hh
+viewRender.o: /usr/include/OpenMesh/Core/Utils/GenProg.hh
+viewRender.o: /usr/include/OpenMesh/Core/Math/VectorT.hh
+viewRender.o: /usr/include/OpenMesh/Core/Math/VectorT_inc.hh
+viewRender.o: /usr/include/OpenMesh/Core/System/omstream.hh
+viewRender.o: /usr/include/OpenMesh/Core/System/mostream.hh
+viewRender.o: /usr/include/OpenMesh/Core/Mesh/PolyMeshT_assign.hh
+viewRender.o: /usr/include/OpenMesh/Core/Mesh/TriMeshT.cc
+viewRender.o: /usr/include/OpenMesh/Core/Mesh/Traits.hh
+viewRender.o: /usr/include/OpenMesh/Core/Mesh/Kernels/Common/Handles.hh
+viewRender.o: /usr/include/OpenMesh/Core/Mesh/Kernels/ArrayKernel/ArrayKernelT.hh
+viewRender.o: /usr/include/OpenMesh/Core/Mesh/Kernels/Common/AttribKernelT.hh
+viewRender.o: /usr/include/OpenMesh/Core/Mesh/Kernels/Common/BaseKernel.hh
+viewRender.o: /usr/include/OpenMesh/Core/Utils/Property.hh
+viewRender.o: /usr/include/OpenMesh/Core/IO/StoreRestore.hh
+viewRender.o: /usr/include/OpenMesh/Core/IO/SR_binary.hh
+viewRender.o: /usr/include/OpenMesh/Core/Mesh/Kernels/ArrayKernel/ArrayItems.hh
+viewRender.o: /usr/include/OpenMesh/Core/Mesh/Kernels/Common/FinalMeshItemsT.hh
+viewRender.o: /usr/include/Poco/Thread.h /usr/include/Poco/Thread_POSIX.h
+viewRender.o: /usr/include/Poco/Runnable.h /usr/include/Poco/SignalHandler.h
+viewRender.o: /usr/include/setjmp.h /usr/include/Poco/Event.h
+viewRender.o: /usr/include/Poco/Event_POSIX.h
+viewRender.o: /usr/include/Poco/RefCountedObject.h
+viewRender.o: /usr/include/Poco/AutoPtr.h /usr/include/sys/select.h
+viewRender.o: /usr/include/bits/select.h /usr/include/bits/time.h
+viewRender.o: /usr/include/Poco/ThreadPool.h bitstring.hh huffman.hh
+viewRender.o: vertexid.hh commonType.hh
 visiblepq.o: vertexid.hh bitstring.hh visiblepq.hh /usr/include/GL/glut.h
 visiblepq.o: /usr/include/GL/freeglut_std.h /usr/include/GL/gl.h
 visiblepq.o: /usr/include/GL/glext.h /usr/include/inttypes.h
@@ -1998,4 +2090,4 @@ visiblepq.o: /usr/include/OpenMesh/Core/IO/StoreRestore.hh
 visiblepq.o: /usr/include/OpenMesh/Core/IO/SR_binary.hh
 visiblepq.o: /usr/include/OpenMesh/Core/Mesh/Kernels/ArrayKernel/ArrayItems.hh
 visiblepq.o: /usr/include/OpenMesh/Core/Mesh/Kernels/Common/FinalMeshItemsT.hh
-visiblepq.o: huffman.hh commonType.hh gfpmesh.hh
+visiblepq.o: huffman.hh commonType.hh gfmesh.hh

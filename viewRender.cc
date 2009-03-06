@@ -6,7 +6,7 @@
 #include <cstdlib>
 
 #include "viewRender.hh"
-#include "gfpmesh.hh"
+#include "gfmesh.hh"
 
 const size_t FRAME_BUFFER_SIZE = 1024*768*3;
 unsigned char pixels_[FRAME_BUFFER_SIZE];
@@ -15,7 +15,7 @@ static ViewRender* render_ = NULL;
 void draw_surface_with_arrays()
 {
     static int output_counter = 1;
-    Gfpmesh* gfmesh_ = render_->gfmesh_;
+    Gfmesh* gfmesh_ = render_->gfmesh_;
 
     //glEnableClientState(GL_VERTEX_ARRAY);
     //glVertexPointer(3, GL_DOUBLE, 0, gfmesh_->vertex_array());
@@ -315,7 +315,7 @@ void motion(int x, int y)
     glutPostRedisplay();
 }
 
-ViewRender::ViewRender(int& argc, char* argv[], const char* name, Gfpmesh* gfmesh)
+ViewRender::ViewRender(int& argc, char* argv[], const char* name, Gfmesh* gfmesh)
         : view_angle_(45), \
         min_distance_(0.01), max_distance_(5000),\
         view_x_(0), view_y_(0), view_z_(0), dx_(0), dy_(0), dz_(0), angle_x_(0), \

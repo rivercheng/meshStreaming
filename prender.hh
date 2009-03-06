@@ -20,9 +20,7 @@ class PRender
     friend void motion(int x, int y);
     friend void timer(int value);
     friend void log_view_parameter();
-    friend void check_visibility(int step);
-    friend void check_visibility2();
-    friend void quick_check_visibility(int step);
+    friend void check_visibility();
 
 public:
     PRender(int& argc, char* argv[], const char* name, Ppmesh* ppmesh, PVisiblePQ* visible_pq, int framerate, Logger& logger);
@@ -78,7 +76,7 @@ private:
 
 private:
     Ppmesh* ppmesh_;
-    Gfpmesh* basemesh_;
+    Gfmesh* basemesh_;
     double view_angle_;
     double left_distance_;
     double right_distance_;

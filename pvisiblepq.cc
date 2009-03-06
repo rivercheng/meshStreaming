@@ -3,13 +3,13 @@
 #include "Poco/RunnableAdapter.h"
 #include "Poco/Mutex.h"
 #include "Poco/Exception.h"
-#include "gfpmesh.hh"
+#include "gfmesh.hh"
 static Ppmesh* ppmesh_ = NULL;
-static Gfpmesh* gfmesh_ = NULL;
+static Gfmesh* gfmesh_ = NULL;
 static const int THRESHOLD = 3;
 
 
-PVisiblePQ::PVisiblePQ(Ppmesh* ppmesh, Gfpmesh* gfmesh, Logger& logger)
+PVisiblePQ::PVisiblePQ(Ppmesh* ppmesh, Gfmesh* gfmesh, Logger& logger)
         :toContinue_(true), isStrict_(true), logger_(logger),\
         toQuit_(false), pixels_(0), size_(0) //ppmesh_(ppmesh), gfmesh_(gfmesh)
 {
@@ -46,7 +46,7 @@ void PVisiblePQ::stop(void)
 //Update the packet importance according to the pixels_ buffer.
 void PVisiblePQ::stat_screen_area()
 {
-    Gfpmesh* gfmesh = gfmesh_;
+    Gfmesh* gfmesh = gfmesh_;
     //clear weight
     for (int i = 0; i < 10; i++)
     {
@@ -66,14 +66,13 @@ void PVisiblePQ::stat_screen_area()
         {
             Index index = seq_no -1;
             gfmesh->increment_face_weight(index);
-            /*if (gfmesh->face_weight(index) == 1u)
+            if (gfmesh->face_weight(index) == 1u)
             {
                 gfmesh->set_visibility(index, true);
-            }*/
+            }
             if (gfmesh->face_weight(index) ==(unsigned int)THRESHOLD)
             {
                 visibleFaces.insert(index);
-                gfmesh->expand_in_face(index, 3);
             }
         }
         if (!toContinue_) return;

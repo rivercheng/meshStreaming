@@ -1,4 +1,4 @@
-#include "gfpmesh.hh"
+#include "gfmesh.hh"
 #include "viewRender.hh"
 #include <iostream>
 #include <fstream>
@@ -39,7 +39,7 @@ int main(int argc, char*argv[])
     istr2>>vertex_number>>face_number>>edge_number;
     std::cout<<"vertex number: "<<vertex_number<<" face_number: "<<face_number<<std::endl;
 
-    Gfpmesh gfmesh;
+    Gfmesh gfmesh;
     
     for (int i = 0; i < vertex_number; i++)
     {

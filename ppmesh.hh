@@ -31,7 +31,7 @@
 #include "huffman.hh"
 #include "vertexid.hh"
 #include "commonType.hh"
-class Gfpmesh;
+class Gfmesh;
 //== CLASS DEFINITION =========================================================
 
 using namespace OpenMesh;
@@ -552,7 +552,7 @@ public:
     /**
      * return the pointer to embedded gfmesh.
      */
-    Gfpmesh* gfmesh(void) const
+    Gfmesh* gfmesh(void) const
     {
         return gfmesh_;
     }
@@ -706,7 +706,7 @@ private:
     size_t                              waiting_;
 
 
-    Gfpmesh*                             gfmesh_;
+    Gfmesh*                             gfmesh_;
     bool                                needGfmesh_;
     unsigned int                        expected_level_;
 

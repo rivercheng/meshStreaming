@@ -66,10 +66,10 @@ void PVisiblePQ::stat_screen_area()
         {
             Index index = seq_no -1;
             gfmesh->increment_face_weight(index);
-            if (gfmesh->face_weight(index) == 1u)
+            /*if (gfmesh->face_weight(index) == 1u)
             {
                 gfmesh->set_visibility(index, true);
-            }
+            }*/
             if (gfmesh->face_weight(index) ==(unsigned int)THRESHOLD)
             {
                 visibleFaces.insert(index);

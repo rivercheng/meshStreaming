@@ -40,23 +40,16 @@ inline void quick_check_visibility(int step)
     unsigned char color_r = 0;
     unsigned char color_g = 0;
     unsigned char color_b = 1;
+    glBegin(GL_TRIANGLES);
     for (size_t i=0; i<gfmesh_->base_face_number(); i++)
     {
-            //Index v1 = (gfmesh_->curr_index(gfmesh_->vertex1_in_base_face(i)));
-            //Index v2 = (gfmesh_->curr_index(gfmesh_->vertex2_in_base_face(i)));
-            //Index v3 = (gfmesh_->curr_index(gfmesh_->vertex3_in_base_face(i)));
-            Index v1 = gfmesh_->vertex1_in_base_face(i);
-            Index v2 = gfmesh_->vertex2_in_base_face(i);
-            Index v3 = gfmesh_->vertex3_in_base_face(i);
-            //if (v1 != v2 && v2 != v3 && v3 != v1)
-            //{
-                glColor3ub(color_r, color_g, color_b);
-                glBegin(GL_TRIANGLES);
-                glArrayElement(v1);
-                glArrayElement(v2);
-                glArrayElement(v3);
-                glEnd();
-            //}
+        Index v1 = gfmesh_->vertex1_in_base_face(i);
+        Index v2 = gfmesh_->vertex2_in_base_face(i);
+        Index v3 = gfmesh_->vertex3_in_base_face(i);
+        glColor3ub(color_r, color_g, color_b);
+        glArrayElement(v1);
+        glArrayElement(v2);
+        glArrayElement(v3);
         if (color_b == 255)
         {
             color_b = 0;
@@ -82,12 +75,9 @@ inline void quick_check_visibility(int step)
             color_b++;
         }
     }
+    glEnd();
     glReadBuffer(GL_BACK);
     glReadPixels(0,0,render_->width_, render_->height_, GL_RGB, GL_UNSIGNED_BYTE, pixels_);
-    //if (render_->check_visibility_)
-    //{
-    //    gfmesh_->reset_visibility(false);
-    //}
     
     gfmesh_->clear_weight();
     for (int i = 0; i < render_->width_*render_->height_*3; i+=3)
@@ -99,18 +89,12 @@ inline void quick_check_visibility(int step)
         if (seq_no != 0)
         {
             Index index = seq_no -1;
-            //gfmesh_->set_root_visibility(index);
             gfmesh_->increment_face_weight(index);
-            if (gfmesh_->face_weight(index) == 1)
+            //if (gfmesh_->face_weight(index) == 1)
+            if (gfmesh_->face_weight(index) == (unsigned int)THRESHOLD)
             {
-                //gfmesh_->set_visibility(index, true);
                 gfmesh_->expand_in_face(index, step);
             }
-            //else if (gfmesh_->face_weight(index) == (unsigned int)THRESHOLD)
-            //if(gfmesh_->step(index) != step)
-            //{
-                //gfmesh_->expand(index, step);
-            //}
         }
     }
     glEnable(GL_LIGHTING);
@@ -134,13 +118,8 @@ inline void check_visibility(int step=3)
                 glutPostRedisplay();
                 return;
             }
-        //std::cerr<<(int)color_r<<" "<<(int)color_g<<" "<<(int)color_b<<std::endl;
-        //if (gfmesh_->root_is_visible(i))
         //if (gfmesh_->is_visible(i))
         {
-            //Index v1 = gfmesh_->vertex1_in_face(i);
-            //Index v2 = gfmesh_->vertex2_in_face(i);
-            //Index v3 = gfmesh_->vertex3_in_face(i);
             Index v1 = gfmesh_->curr_index(gfmesh_->vertex1_in_face(i), step);
             Index v2 = gfmesh_->curr_index(gfmesh_->vertex2_in_face(i), step);
             Index v3 = gfmesh_->curr_index(gfmesh_->vertex3_in_face(i), step);
@@ -180,10 +159,6 @@ inline void check_visibility(int step=3)
     glEnd();
     glReadBuffer(GL_BACK);
     glReadPixels(0,0,render_->width_, render_->height_, GL_RGB, GL_UNSIGNED_BYTE, pixels_);
-    //if (render_->check_visibility_)
-    //{
-    //    gfmesh_->reset_visibility(false);
-    //}
     render_->visible_pq_->update(pixels_, render_->width_*render_->height_*3);
     glEnable(GL_LIGHTING);
     glEnable(GL_DITHER);
@@ -211,15 +186,9 @@ void draw_surface_with_arrays()
         log_view_parameter();
         gfmesh_->collapse();
         gfmesh_->reset_visibility(true);
-        //gfmesh_->reset_root_visibility();
-        //quick_check_visibility(1);
-        //quick_check_visibility(2);
-        //quick_check_visibility(1);
         quick_check_visibility(3);
-        //render_->showBase_ = true;
-        //quick_check_visibility(1);
-        //check_visibility();
         render_->setCheck(false);
+        //check_visibility();
     }
     if (render_->recheck_visibility_ && render_->visible_pq_ != NULL)
     {
@@ -240,7 +209,7 @@ void draw_surface_with_arrays()
         glDisableClientState(GL_NORMAL_ARRAY);
         glBegin(GL_TRIANGLES);
         assert(gfmesh_->face_number()*3 == gfmesh_->face_array_size());
-        if (render_->showBase_ && gfmesh_->face_number() > LIMITED_NUMBER)
+        /*if (render_->showBase_ && gfmesh_->face_number() > LIMITED_NUMBER)
         //if (gfmesh_->face_number() > LIMITED_NUMBER)
         {
             //==================try to find the number of faces to render.
@@ -302,27 +271,16 @@ void draw_surface_with_arrays()
                 }
             }
             //std::cerr<<"after filtering "<<count<<std::endl;
-            /*
-            for (size_t i=0; i<gfmesh_->base_face_number(); i++)
-            {
-                glNormal3d(gfmesh_->base_face_normal_array()[3*i], gfmesh_->base_face_normal_array()[3*i+1], gfmesh_->base_face_normal_array()[3*i+2]);
-                Index v1 = gfmesh_->vertex1_in_base_face(i);
-                Index v2 = gfmesh_->vertex2_in_base_face(i);
-                Index v3 = gfmesh_->vertex3_in_base_face(i);
-                glArrayElement(v1);
-                glArrayElement(v2);
-                glArrayElement(v3);
-            }*/
         }
-        else
+        else*/
         {
         for (size_t i=0; i< gfmesh_->face_number(); i++)
         {
-            if (render_->check_visibility_)
-            {
-                glutPostRedisplay();
-                return;
-            }
+            //if (render_->check_visibility_)
+            //{
+            //    glutPostRedisplay();
+            //    return;
+            //}
             if (gfmesh_->is_visible(i)) //only render visible triangles
             {
                 glNormal3d(gfmesh_->face_normal_array()[3*i], gfmesh_->face_normal_array()[3*i+1], gfmesh_->face_normal_array()[3*i+2]);
@@ -346,6 +304,8 @@ void draw_surface_with_arrays()
         }
         }
         glEnd();
+        //render_->setRecheck(true);
+        //glutPostRedisplay();
     }
     gfmesh_->reset_updated();
     if (render_->to_output_)

@@ -18,7 +18,7 @@ def invokeClient(model):
 
 def child1View1():
 	global model
-	model=" dragon1"
+	model=" dragon"
 	text_file.write(str(datetime.datetime.now()))
 	text_file.write(" View Item Dragon : Item # 1432 \n")
 	invokeClient(model)

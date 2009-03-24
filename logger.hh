@@ -255,13 +255,10 @@ public:
     }
 
     Logger *log2_;
-    
+
+
 private:
     
-    std::ostream* p_os_;
-    struct timeval begin_;
-    bool  needRelease_;
-    Poco::Mutex  mutex_;
     inline const std::string curr_time()
     {
         struct timeval tp;
@@ -278,5 +275,10 @@ private:
         curr<<diff_s<<" "<<diff_us;
         return curr.str();
     }
+    std::ostream* p_os_;
+    struct timeval begin_;
+    bool  needRelease_;
+    Poco::Mutex  mutex_;
+
 };
 #endif

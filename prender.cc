@@ -620,25 +620,50 @@ PRender::PRender(int& argc, char* argv[], const char* name, Ppmesh* ppmesh, PVis
     glutDisplayFunc(disp);
     glutReshapeFunc(reshape);
     glutKeyboardFunc(keyboard);
-    glutSpecialFunc(special);
+    glutSpecialFunc(special);	
     glutMouseFunc(mouse);
     glutMotionFunc(motion);
     glutTimerFunc(1000/framerate, timer, framerate);
 
     glClearColor(0., 0., 0., 0.);
 
-    GLfloat mat_specular[] = {0.3, 0.3, 0.3, 0.0};
-    GLfloat mat_shininess[]  = {100};
+    GLfloat mat[4];
+
+    //gold
+    mat[0] = 0.24725;
+    mat[1] = 0.1995;
+    mat[2] = 0.0745;
+    mat[3] = 1.0;
+    glMaterialfv(GL_FRONT, GL_AMBIENT, mat);
+    mat[0] = 0.75164;
+    mat[1] = 0.60648;
+    mat[2] = 0.22648;
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, mat);
+    mat[0] = 0.628281;
+    mat[1] = 0.555802;
+    mat[2] = 0.366065;
+    GLfloat shine = 0.8;
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat);
+    glMaterialf(GL_FRONT, GL_SHININESS, shine * 128.0);
     GLfloat light_position[] = {0.0, 0.0, 1.0, 0.0};
-    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
+
+/*
+    GLfloat mat_specular[] = {0.628281, 0.555802,0.366065, 0.0};
+    GLfloat mat_shininess[]  = {0.5};
+    GLfloat light_position[] = {0.0, 0.0, 1.0, 0.0};
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+    glMaterialfv(GL_FRONT, GL_SHININESS,mat_shininess  );
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+*/
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glEnable(GL_NORMALIZE);
+
+
     render_ = this;
     std::cerr<<view_x_<<" "<<view_y_<<" "<<view_z_<<" "<<std::endl;
     std::cerr<<bounding_length_<<std::endl;

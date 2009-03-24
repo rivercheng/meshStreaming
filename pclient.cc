@@ -26,12 +26,16 @@ int main(int argc, char** argv)
 {
     std::string config("view_config");
     std::string user("DEFAULT");
+    int rtt= 200; //in ms
+    long data_rate = 125000; //bytes/s
     
-    if (argc < 4 ||argc > 6)
+    if (argc < 4 ||argc > 8)
     {
         Path p(argv[0]);
-        std::cout << "usage: " << p.getBaseName() << " <address> <port> <prefix>[view_config_file]" << std::endl;
+        std::cout << "usage: " << p.getBaseName() << " <address> <port> <prefix>[view_config_file][user][RTT][data_rate]" << std::endl;
         std::cout << "       download and display prefix.ppm from the server." << std::endl;
+	std::cout << "       RTT should be given in ms." << std::endl;
+	std::cout << "       data_rate should be given in xxx bytes/s." << std::endl;
         return 1;
     }
     
@@ -40,9 +44,12 @@ int main(int argc, char** argv)
         config = argv[4];
     }
     
-    if (argc == 6)
+    if (argc == 8)
     {
+        config = argv[4];
         user = argv[5];
+        rtt = atoi(argv[6]);
+        data_rate = atol(argv[7]);
     }
 
     std::string ip_addr(argv[1]);
@@ -103,6 +110,8 @@ int main(int argc, char** argv)
         }
 
         PReceiver   receiver(mesh, visible_pq, render, ip_addr, udp_port, sock, logpkt);
+	receiver.rtt = rtt;
+	receiver.data_rate = data_rate;
         Thread      receiver_thread(std::string("receiver"));
         receiver_thread.start(receiver);
         render.enterMainLoop();

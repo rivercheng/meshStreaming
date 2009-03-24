@@ -22,6 +22,9 @@ public:
     }
 
     virtual void run(void);
+    
+    int rtt;
+    long data_rate;
 private:
     Ppmesh& mesh_;
     PVisiblePQ& pq_;
@@ -30,7 +33,8 @@ private:
     Poco::UInt16 udp_port_;
     StreamSocket& sock_;
     Logger& logger_;
-    double     average_len;
+    double average_len;
+    
 };
 
 

@@ -5,7 +5,8 @@ import datetime
 import sys
 import os
 
-input = 'DEFAULT.packet.2009.02.17.21.29.49.txt'
+
+input = sys.argv[1]
 inputFile = open(input)
 datarate = {}
 for line in inputFile.readlines():

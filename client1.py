@@ -44,80 +44,80 @@ def child2View3():
    
 def child3View1():
     global model
-    model=" thai1"
+    model=" huge_damage1"
     text_file.write(str(datetime.datetime.now()))
-    text_file.write(" View Item thai1 : Item # 1632 \n")
+    text_file.write(" View Item thai_damage1 : Item # 1632 \n")
     invokeClient(model)
 
 def child3View2():
     global model
-    model=" thai2"
+    model=" huge"
     text_file.write(str(datetime.datetime.now()))
-    text_file.write(" View Item thai2 : Item # 1633 \n")
+    text_file.write(" View Item thai : Item # 1633 \n")
     invokeClient(model)
 
 def child3View3():
     global model
-    model=" thai3"
+    model=" huge_damage2"
     text_file.write(str(datetime.datetime.now()))
-    text_file.write(" View Item thai3 : Item # 1634 \n")
+    text_file.write(" View Item thai_damage2 : Item # 1634 \n")
     invokeClient(model)
    
 def child1View1():
     global model
-    model=" dragon1"
+    model=" dragon"
     text_file.write(str(datetime.datetime.now()))
-    text_file.write(" View Item dragon1 : Item # 1432 \n")
+    text_file.write(" View Item dragon : Item # 1432 \n")
     invokeClient(model)
 
 def child1View2():
     global model
-    model=" dragon2"
+    model=" dragon_damage1"
     text_file.write(str(datetime.datetime.now()))
-    text_file.write(" View Item dragon2 : Item # 1433 \n")
+    text_file.write(" View Item dragon_damage1 : Item # 1433 \n")
     invokeClient(model)
 
 def child1View3():
     global model
-    model=" dragon3"
+    model=" dragon_damage2"
     text_file.write(str(datetime.datetime.now()))
-    text_file.write(" View Item dragon3 : Item # 1434 \n")
+    text_file.write(" View Item dragon_damage2 : Item # 1434 \n")
     invokeClient(model)
   
 
 def buyThai1():
     if(thaibuy1.get()=="Buy") :
         text_file.write(str(datetime.datetime.now()))
-        text_file.write(" Buy Item thai1 : Item # 1632 \n")
+        text_file.write(" Buy Item thai_damage1 : Item # 1632 \n")
         #child6_buy1.configure(bg='green')
         thaibuy1.set('Cancel')
     else :
         text_file.write(str(datetime.datetime.now()))
-        text_file.write(" Cancel Item thai1 : Item # 1632 \n")
+        text_file.write(" Cancel Item thai_damage1 : Item # 1632 \n")
         #child6_buy1.configure(bg='red')
         thaibuy1.set('Buy')
    
 def buyThai2():
     if(thaibuy2.get()=="Buy") :
         text_file.write(str(datetime.datetime.now()))
-        text_file.write(" Buy Item thai2 : Item # 1633 \n")
+        text_file.write(" Buy Item thai : Item # 1633 \n")
         #child6_buy2.configure(bg='green')
         thaibuy2.set('Cancel')
     else :
         text_file.write(str(datetime.datetime.now()))
-        text_file.write(" Cancel Item thai2 : Item # 1633 \n")
+        text_file.write(" Cancel Item thai : Item # 1633 \n")
         #child6_buy2.configure(bg='red')
         thaibuy2.set('Buy')
    
 def buyThai3():
     if(thaibuy3.get()=="Buy") :
         text_file.write(str(datetime.datetime.now()))
-        text_file.write(" Buy Item thai3 : Item # 1634 \n")
+        text_file.write(" Buy Item thai_damage2 : Item # 1634 \n")
         #child6_buy3.configure(bg='green')
         thaibuy3.set('Cancel')
     else :
         text_file.write(str(datetime.datetime.now()))
-        text_file.write(" Cancel Item thai3 : Item # 1634 \n")
+        text_file.write(" Cancel Item thai_damage2 : Item # 1634 \n")
         #child6_buy3.configure(bg='red')
         thaibuy3.set('Buy')
        
@@ -162,36 +162,36 @@ def buyHappy3():
 def buyDragon1():
     if(dragonbuy1.get()=="Buy") :
         text_file.write(str(datetime.datetime.now()))
-        text_file.write(" Buy Item dragon1 : Item # 1432 \n")
+        text_file.write(" Buy Item dragon : Item # 1432 \n")
         #child4_buy1.configure(bg='green')
         dragonbuy1.set('Cancel')
     else :
         text_file.write(str(datetime.datetime.now()))
-        text_file.write(" Cancel Item dragon1 : Item # 1432 \n")
+        text_file.write(" Cancel Item dragon : Item # 1432 \n")
         #child4_buy1.configure(bg='red')
         dragonbuy1.set('Buy')
    
 def buyDragon2():
     if(dragonbuy2.get()=="Buy") :
         text_file.write(str(datetime.datetime.now()))
-        text_file.write(" Buy Item dragon2 : Item # 1433 \n")
+        text_file.write(" Buy Item dragon_damage1 : Item # 1433 \n")
         #child4_buy2.configure(bg='green')
         dragonbuy2.set('Cancel')
     else :
         text_file.write(str(datetime.datetime.now()))
-        text_file.write(" Cancel Item dragon2 : Item # 1433 \n")
+        text_file.write(" Cancel Item dragon_damage1 : Item # 1433 \n")
         #child4_buy2.configure(bg='red')
         dragonbuy2.set('Buy')
    
 def buyDragon3():
     if(dragonbuy3.get()=="Buy") :
         text_file.write(str(datetime.datetime.now()))
-        text_file.write(" Buy Item dragon3 : Item # 1434 \n")
+        text_file.write(" Buy Item dragon_damage2 : Item # 1434 \n")
         #child4_buy3.configure(bg='green')
         dragonbuy3.set('Cancel')
     else :
         text_file.write(str(datetime.datetime.now()))
-        text_file.write(" Cancel Item dragon3 : Item # 1434 \n")
+        text_file.write(" Cancel Item dragon_damage2 : Item # 1434 \n")
         #child4_buy3.configure(bg='red')
         dragonbuy3.set('Buy')
        

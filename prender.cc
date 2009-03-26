@@ -630,6 +630,7 @@ PRender::PRender(int& argc, char* argv[], const char* name, Ppmesh* ppmesh, PVis
     GLfloat mat[4];
 
     //gold
+/*
     mat[0] = 0.24725;
     mat[1] = 0.1995;
     mat[2] = 0.0745;
@@ -645,9 +646,29 @@ PRender::PRender(int& argc, char* argv[], const char* name, Ppmesh* ppmesh, PVis
     GLfloat shine = 0.8;
     glMaterialfv(GL_FRONT, GL_SPECULAR, mat);
     glMaterialf(GL_FRONT, GL_SHININESS, shine * 128.0);
-    GLfloat light_position[] = {0.0, 0.0, 1.0, 0.0};
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+*/
+    mat[0] = 0.2125;
+    mat[1] = 0.1275;
+    mat[2] = 0.054;
+    mat[3] = 1.0;
+    glMaterialfv(GL_FRONT, GL_AMBIENT, mat);
+    mat[0] = 0.714;
+    mat[1] = 0.4284;
+    mat[2] = 0.18144;
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, mat);
+    mat[0] = 0.393548;
+    mat[1] = 0.271906;
+    mat[2] = 0.166721;
+    GLfloat shine = 0.2;
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat);
+    glMaterialf(GL_FRONT, GL_SHININESS, shine * 128.0);
 
+    GLfloat light_position[] = {0.0, 0.0, 1.0, 0.0};
+    GLfloat light_position2[] = {1.0, 1.0, 1.0, 0.0};
+    GLfloat light_position3[] = {12.0, -1.0, -10.0, 0.0};
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+    glLightfv(GL_LIGHT1, GL_POSITION, light_position2);
+    glLightfv(GL_LIGHT1, GL_POSITION, light_position3);
 
 /*
     GLfloat mat_specular[] = {0.628281, 0.555802,0.366065, 0.0};

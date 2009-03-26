@@ -4,7 +4,7 @@ import Image, ImageTk
 import datetime
 import random
 
-model = " huge "
+model = "huge "
 command = "./pclient localhost 10020 "
 
 
@@ -12,29 +12,34 @@ def invokeClient(model):
     #name=text1.get()
     #if name=="Enter Name":
     #    name=" DEFAULT "
-    #print command + model + " view_config " + name
-    #os.system( command + model + " view_config " )
-    donothing()
+    
+    name = "test "
+    global command
+    global delay
+    global data_rate
+    print command + model + " view_config " + name + delay + data_rate 
+    os.system( command + model + " view_config " + name + delay + data_rate)
+
    
 def child2View1():
     global model
-    model=" happy1"
+    model=" happy_damage1"
     text_file.write(str(datetime.datetime.now()))
-    text_file.write(" View Item happy1 : Item # 1532 \n")
+    text_file.write(" View Item happy_damage1 : Item # 1532 \n")
     invokeClient(model)
 
 def child2View2():
     global model
-    model=" happy2"
+    model=" happy_damage2"
     text_file.write(str(datetime.datetime.now()))
-    text_file.write(" View Item happy2 : Item # 1533 \n")
+    text_file.write(" View Item happy_damage2 : Item # 1533 \n")
     invokeClient(model)
 
 def child2View3():
     global model
-    model=" happy3"
+    model=" happy"
     text_file.write(str(datetime.datetime.now()))
-    text_file.write(" View Item happy3 : Item # 1534 \n")
+    text_file.write(" View Item happy : Item # 1534 \n")
     invokeClient(model)
    
 def child3View1():
@@ -84,73 +89,73 @@ def buyThai1():
     if(thaibuy1.get()=="Buy") :
         text_file.write(str(datetime.datetime.now()))
         text_file.write(" Buy Item thai1 : Item # 1632 \n")
-        child6_buy1.configure(bg='green')
+        #child6_buy1.configure(bg='green')
         thaibuy1.set('Cancel')
     else :
         text_file.write(str(datetime.datetime.now()))
         text_file.write(" Cancel Item thai1 : Item # 1632 \n")
-        child6_buy1.configure(bg='red')
+        #child6_buy1.configure(bg='red')
         thaibuy1.set('Buy')
    
 def buyThai2():
     if(thaibuy2.get()=="Buy") :
         text_file.write(str(datetime.datetime.now()))
         text_file.write(" Buy Item thai2 : Item # 1633 \n")
-        child6_buy2.configure(bg='green')
+        #child6_buy2.configure(bg='green')
         thaibuy2.set('Cancel')
     else :
         text_file.write(str(datetime.datetime.now()))
         text_file.write(" Cancel Item thai2 : Item # 1633 \n")
-        child6_buy2.configure(bg='red')
+        #child6_buy2.configure(bg='red')
         thaibuy2.set('Buy')
    
 def buyThai3():
     if(thaibuy3.get()=="Buy") :
         text_file.write(str(datetime.datetime.now()))
         text_file.write(" Buy Item thai3 : Item # 1634 \n")
-        child6_buy3.configure(bg='green')
+        #child6_buy3.configure(bg='green')
         thaibuy3.set('Cancel')
     else :
         text_file.write(str(datetime.datetime.now()))
         text_file.write(" Cancel Item thai3 : Item # 1634 \n")
-        child6_buy3.configure(bg='red')
+        #child6_buy3.configure(bg='red')
         thaibuy3.set('Buy')
        
         
 def buyHappy1():
     if(happybuy1.get()=="Buy") :
         text_file.write(str(datetime.datetime.now()))
-        text_file.write(" Buy Item happy1 : Item # 1532 \n")
-        child5_buy1.configure(bg='green')
+        text_file.write(" Buy Item happy_damage1 : Item # 1532 \n")
+        #child5_buy1.configure(bg='green')
         happybuy1.set('Cancel')
     else :
         text_file.write(str(datetime.datetime.now()))
-        text_file.write(" Cancel Item happy1 : Item # 1532 \n")
-        child5_buy1.configure(bg='red')
+        text_file.write(" Cancel Item happy_damage1 : Item # 1532 \n")
+        #child5_buy1.configure(bg='red')
         happybuy1.set('Buy')
    
 def buyHappy2():
     if(happybuy2.get()=="Buy") :
         text_file.write(str(datetime.datetime.now()))
-        text_file.write(" Buy Item happy2 : Item # 1533 \n")
-        child5_buy2.configure(bg='green')
+        text_file.write(" Buy Item happy_damage2 : Item # 1533 \n")
+        #child5_buy2.configure(bg='green')
         happybuy2.set('Cancel')
     else :
         text_file.write(str(datetime.datetime.now()))
-        text_file.write(" Cancel Item happy2 : Item # 1533 \n")
-        child5_buy2.configure(bg='red')
+        text_file.write(" Cancel Item happy_damage2 : Item # 1533 \n")
+        #child5_buy2.configure(bg='red')
         happybuy2.set('Buy')
    
 def buyHappy3():
     if(happybuy3.get()=="Buy") :
         text_file.write(str(datetime.datetime.now()))
-        text_file.write(" Buy Item happy3 : Item # 1534 \n")
-        child5_buy3.configure(bg='green')
+        text_file.write(" Buy Item happy : Item # 1534 \n")
+        #child5_buy3.configure(bg='green')
         happybuy3.set('Cancel')
     else :
         text_file.write(str(datetime.datetime.now()))
-        text_file.write(" Cancel Item happy3 : Item # 1534 \n")
-        child5_buy3.configure(bg='red')
+        text_file.write(" Cancel Item happy : Item # 1534 \n")
+        #child5_buy3.configure(bg='red')
         happybuy3.set('Buy')
        
        
@@ -158,36 +163,36 @@ def buyDragon1():
     if(dragonbuy1.get()=="Buy") :
         text_file.write(str(datetime.datetime.now()))
         text_file.write(" Buy Item dragon1 : Item # 1432 \n")
-        child4_buy1.configure(bg='green')
+        #child4_buy1.configure(bg='green')
         dragonbuy1.set('Cancel')
     else :
         text_file.write(str(datetime.datetime.now()))
         text_file.write(" Cancel Item dragon1 : Item # 1432 \n")
-        child4_buy1.configure(bg='red')
+        #child4_buy1.configure(bg='red')
         dragonbuy1.set('Buy')
    
 def buyDragon2():
     if(dragonbuy2.get()=="Buy") :
         text_file.write(str(datetime.datetime.now()))
         text_file.write(" Buy Item dragon2 : Item # 1433 \n")
-        child4_buy2.configure(bg='green')
+        #child4_buy2.configure(bg='green')
         dragonbuy2.set('Cancel')
     else :
         text_file.write(str(datetime.datetime.now()))
         text_file.write(" Cancel Item dragon2 : Item # 1433 \n")
-        child4_buy2.configure(bg='red')
+        #child4_buy2.configure(bg='red')
         dragonbuy2.set('Buy')
    
 def buyDragon3():
     if(dragonbuy3.get()=="Buy") :
         text_file.write(str(datetime.datetime.now()))
         text_file.write(" Buy Item dragon3 : Item # 1434 \n")
-        child4_buy3.configure(bg='green')
+        #child4_buy3.configure(bg='green')
         dragonbuy3.set('Cancel')
     else :
         text_file.write(str(datetime.datetime.now()))
         text_file.write(" Cancel Item dragon3 : Item # 1434 \n")
-        child4_buy3.configure(bg='red')
+        #child4_buy3.configure(bg='red')
         dragonbuy3.set('Buy')
        
        
@@ -306,7 +311,7 @@ photo3 = ImageTk.PhotoImage(im)
 
 
 #main window
-main_label_1 = tk.Label(root,takefocus=0,text="Welcome to the online Antiques Store",font = ("Arial", 28, "bold"),bg="#CCCC99")
+main_label_1 = tk.Label(root,takefocus=0,text="Welcome to the Online Antiques Store",font = ("Arial", 28, "bold"),bg="#CCCC99")
 main_label_1.pack(side=tk.TOP, padx=2, pady=2)
 main_label_1.place(x=100, y= 150, width=640, height=40)
 
@@ -403,11 +408,11 @@ dragonbuy1.set('Buy')
 dragonbuy2.set('Buy')
 dragonbuy3.set('Buy')
 ##
-child4_buy1 = tk.Button(child4, compound=tk.TOP,bg='red' ,activebackground='yellow', textvariable=dragonbuy1, command=buyDragon1)
+child4_buy1 = tk.Button(child4, compound=tk.TOP,bg='gray' ,activebackground='yellow', textvariable=dragonbuy1, command=buyDragon1)
 child4_buy1.place(x=130, y= 350)
-child4_buy2 = tk.Button(child4, compound=tk.TOP,bg='red' , activebackground='yellow', textvariable=dragonbuy2, command=buyDragon2)
+child4_buy2 = tk.Button(child4, compound=tk.TOP,bg='gray' , activebackground='yellow', textvariable=dragonbuy2, command=buyDragon2)
 child4_buy2.place(x=360, y= 350)
-child4_buy3 = tk.Button(child4, compound=tk.TOP,bg='red' ,activebackground='yellow', textvariable=dragonbuy3, command=buyDragon3)
+child4_buy3 = tk.Button(child4, compound=tk.TOP,bg='gray' ,activebackground='yellow', textvariable=dragonbuy3, command=buyDragon3)
 child4_buy3.place(x=580, y= 350)
 
 
@@ -450,11 +455,11 @@ happybuy1.set('Buy')
 happybuy2.set('Buy')
 happybuy3.set('Buy')
 ##
-child5_buy1 = tk.Button(child5, compound=tk.TOP,bg='red' ,activebackground='yellow', textvariable=happybuy1, command=buyHappy1)
+child5_buy1 = tk.Button(child5, compound=tk.TOP,bg='gray' ,activebackground='yellow', textvariable=happybuy1, command=buyHappy1)
 child5_buy1.place(x=130, y= 440)
-child5_buy2 = tk.Button(child5, compound=tk.TOP,bg='red' , activebackground='yellow', textvariable=happybuy2, command=buyHappy2)
+child5_buy2 = tk.Button(child5, compound=tk.TOP,bg='gray' , activebackground='yellow', textvariable=happybuy2, command=buyHappy2)
 child5_buy2.place(x=360, y= 440)
-child5_buy3 = tk.Button(child5, compound=tk.TOP,bg='red' ,activebackground='yellow', textvariable=happybuy3, command=buyHappy3)
+child5_buy3 = tk.Button(child5, compound=tk.TOP,bg='gray' ,activebackground='yellow', textvariable=happybuy3, command=buyHappy3)
 child5_buy3.place(x=580, y= 440)
 
 
@@ -497,13 +502,16 @@ thaibuy1.set('Buy')
 thaibuy2.set('Buy')
 thaibuy3.set('Buy')
 ##
-child6_buy1 = tk.Button(child6, compound=tk.TOP,bg='red' ,activebackground='yellow', textvariable=thaibuy1, command=buyThai1)
+child6_buy1 = tk.Button(child6, compound=tk.TOP,bg='gray' ,activebackground='yellow', textvariable=thaibuy1, command=buyThai1)
 child6_buy1.place(x=130, y= 480)
-child6_buy2 = tk.Button(child6, compound=tk.TOP,bg='red' , activebackground='yellow', textvariable=thaibuy2, command=buyThai2)
+child6_buy2 = tk.Button(child6, compound=tk.TOP,bg='gray' , activebackground='yellow', textvariable=thaibuy2, command=buyThai2)
 child6_buy2.place(x=360, y= 480)
-child6_buy3 = tk.Button(child6, compound=tk.TOP,bg='red' ,activebackground='yellow', textvariable=thaibuy3, command=buyThai3)
+child6_buy3 = tk.Button(child6, compound=tk.TOP,bg='gray' ,activebackground='yellow', textvariable=thaibuy3, command=buyThai3)
 child6_buy3.place(x=580, y= 480)
 
+os.system("./delay.sh 200ms")
+delay = "400 "
+data_rate= "40000"
 
 #all other stuff
 text_file = open("log-"+str(datetime.datetime.now())+".txt", "w")

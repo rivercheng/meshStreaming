@@ -13,11 +13,11 @@ def invokeClient(model):
     #if name=="Enter Name":
     #    name=" DEFAULT "
     
-    name = "test "
+    name = "experiment "
     global command
     global delay
     global data_rate
-    print command + model + " view_config " + name + delay + data_rate 
+    #print command + model + " view_config " + name + delay + data_rate 
     os.system( command + model + " view_config " + name + delay + data_rate)
 
    

@@ -21,7 +21,6 @@ using Poco::Path;
 using Poco::Exception;
 using Poco::Thread;
 
-
 int main(int argc, char** argv)
 {
     std::string config("view_config");
@@ -29,7 +28,7 @@ int main(int argc, char** argv)
     int rtt= 200; //in ms
     long data_rate = 125000; //bytes/s
     
-    if (argc < 4 ||argc > 8)
+    if (argc < 4 ||argc > 9)
     {
         Path p(argv[0]);
         std::cout << "usage: " << p.getBaseName() << " <address> <port> <prefix>[view_config_file][user][RTT][data_rate]" << std::endl;
@@ -44,7 +43,7 @@ int main(int argc, char** argv)
         config = argv[4];
     }
     
-    if (argc == 8)
+    if (argc >= 8)
     {
         config = argv[4];
         user = argv[5];
@@ -52,6 +51,89 @@ int main(int argc, char** argv)
         data_rate = atol(argv[7]);
     }
 
+    PRender::Record *record = 0;
+    if (argc == 9)
+    {
+        record = new PRender::Record;
+        std::ifstream ifs(argv[8]);
+        std::string str;
+        while(!ifs.eof())
+        {
+            std::getline(ifs, str);
+            std::stringstream sstr(str);
+            int sec;
+            int microsec;
+            std::string action;
+            sstr>>sec>>microsec>>action;
+            std::cerr<<str<<std::endl;
+            long t = sec*1000000 + microsec;
+            if (action == "BEGIN")
+            {
+                continue;
+            }
+            else if(action == "ZOOM_IN")
+            {
+                record->push_back(PRender::Action(t, PRender::SPECIAL, PRender::NONE, PRender::UP));
+            }
+            else if(action == "ZOOM_OUT")
+            {
+                record->push_back(PRender::Action(t, PRender::SPECIAL, PRender::NONE, PRender::DOWN));
+            }
+            else if(action == "REVOLVE_CLOCKWISE")
+            {
+                record->push_back(PRender::Action(t, PRender::SPECIAL, PRender::NONE, PRender::LEFT));
+            }
+            else if(action == "REVOLVE_ANTICLOCKWISE")
+            {
+                record->push_back(PRender::Action(t, PRender::SPECIAL, PRender::NONE, PRender::RIGHT));
+            }
+            else if(action == "MOVE_LEFT")
+            {
+                record->push_back(PRender::Action(t, PRender::SPECIAL, PRender::ALT, PRender::LEFT));
+            }
+            else if(action == "MOVE_RIGHT")
+            {
+                record->push_back(PRender::Action(t, PRender::SPECIAL, PRender::ALT, PRender::RIGHT));
+            }
+            else if(action == "MOVE_UP")
+            {
+                record->push_back(PRender::Action(t, PRender::SPECIAL, PRender::ALT, PRender::UP));
+            }
+            else if(action == "MOVE_DOWN")
+            {
+                record->push_back(PRender::Action(t, PRender::SPECIAL, PRender::ALT, PRender::DOWN));
+            }
+            else if(action == "ROTATE_CLOCKWISE")
+            {
+                record->push_back(PRender::Action(t, PRender::SPECIAL, PRender::CTRL, PRender::LEFT));
+            }
+            else if(action == "ROTATE_ANTICLOCKWISE")
+            {
+                record->push_back(PRender::Action(t, PRender::SPECIAL, PRender::CTRL, PRender::RIGHT));
+            }
+            else if(action == "TILT_FORWARD")
+            {
+                record->push_back(PRender::Action(t, PRender::SPECIAL, PRender::CTRL, PRender::UP));
+            }
+            else if(action == "TILT_BACKWARD")
+            {
+                record->push_back(PRender::Action(t, PRender::SPECIAL, PRender::CTRL, PRender::DOWN));
+            }
+            else if(action == "RESET")
+            {
+                record->push_back(PRender::Action(t, PRender::NORMAL, PRender::NONE, PRender::R));
+            }
+            else if(action == "QUIT")
+            {
+                record->push_back(PRender::Action(t, PRender::NORMAL, PRender::NONE, PRender::Q));
+            }
+            else
+            {
+                std::cerr<<"Unkown action in record file."<<std::endl;
+                continue;
+            }
+        }
+    }
     std::string ip_addr(argv[1]);
     std::string port(argv[2]);
     std::string prefix(argv[3]);
@@ -99,7 +181,7 @@ int main(int argc, char** argv)
         str.close();  					//reconstitution of the poor progressive mesh complete
         //======================
         PVisiblePQ visible_pq(&mesh, mesh.gfmesh(), logger);
-        PRender render(argc, argv, "happy", &mesh, &visible_pq, 8, logusr);
+        PRender render(argc, argv, "happy", &mesh, &visible_pq, 8, logusr, record);
 
         std::ifstream ifs(config.c_str());
         if (ifs)

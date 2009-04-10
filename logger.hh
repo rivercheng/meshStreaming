@@ -256,6 +256,20 @@ public:
 
     Logger *log2_;
 
+    inline long curr_time_long()
+    {
+        struct timeval tp;
+        std::stringstream curr;
+        gettimeofday(&tp, 0);
+        time_t diff_s = tp.tv_sec - begin_.tv_sec;
+        suseconds_t diff_us = tp.tv_usec - begin_.tv_usec;
+        if (diff_us < 0)
+        {
+            diff_us += 1000000;
+            diff_s  -= 1;
+        }
+        return ((long)diff_s)*1000000 + diff_us;
+    }
 
 private:
     
@@ -275,6 +289,8 @@ private:
         curr<<diff_s<<" "<<diff_us;
         return curr.str();
     }
+
+
     std::ostream* p_os_;
     struct timeval begin_;
     bool  needRelease_;

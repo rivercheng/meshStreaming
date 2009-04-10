@@ -79,7 +79,7 @@ public:
             addr = sock.address();
             std::cout<<" UDP port : "<<addr.port()<<std::endl;
             port_ = addr.port();
-            long wait_seconds =  120;
+            long wait_seconds =  1200;
             long wait_mseconds = 0;
             sock.setReceiveTimeout(Poco::Timespan(wait_seconds, wait_mseconds));
 

@@ -3,6 +3,7 @@
 #include <GL/glext.h>
 #include <Poco/Mutex.h>
 #include <sstream>
+#include <sys/time.h>
 
 #include "prender.hh"
 #include "ppmesh.hh"
@@ -375,9 +376,9 @@ void keyboard(unsigned char key, int x, int y)
     glutPostRedisplay();
 }
 
-void special(int key, int x, int y)
+
+void handleSpecial(int key, int x, int y, int state)
 {
-    int state = glutGetModifiers();
     if (state != GLUT_ACTIVE_ALT && state != GLUT_ACTIVE_CTRL)
     {
         switch (key)
@@ -453,6 +454,12 @@ void special(int key, int x, int y)
     glutPostRedisplay();
 }
 
+void special(int key, int x, int y)
+{
+    int state = glutGetModifiers();
+    handleSpecial(key, x, y, state);
+}
+
 void mouse(int button, int state, int x, int y)
 {
     if (state == GLUT_DOWN)
@@ -514,6 +521,82 @@ void motion(int x, int y)
     glutPostRedisplay();
 }
 
+long currTime()
+{
+    return render_->logger_.curr_time_long();
+}
+
+extern void timer(int value);
+
+void setRecordedAction()
+{
+    //std::cerr<<"in set function."<<std::endl;
+    static long nextTime = render_->beginTime_;
+    if (currTime() > nextTime && !render_->record_->empty())
+    {
+        PRender::Action action = render_->record_->front();
+        render_->record_->pop_front();
+        if (!render_->record_->empty())
+        {
+            PRender::Action& action2 = render_->record_->front();
+            nextTime  = action2.time;
+            //int delay = action2.time - action.time;
+            //std::cerr<<delay<<std::endl;
+            //if (delay < 0) delay = 0;
+            //glutTimerFunc(delay, timer, 0);
+            //std::cerr<<delay<<std::endl;
+        }
+        if (action.type == PRender::NORMAL)
+        {
+            if (action.key == PRender::R)
+            {
+                keyboard('R', 0, 0);
+            }
+            else if(action.key == PRender::Q)
+            {
+                keyboard(27, 0, 0);
+            }
+            else
+            {
+                std::cerr<<"Unknown key"<<std::endl;
+                exit(1);
+            }
+        }
+        else
+        {
+            int state = 0;
+            int key   = 0;
+            if (action.state == PRender::CTRL)
+            {
+                state = GLUT_ACTIVE_CTRL;
+            }
+            else if(action.state == PRender::ALT)
+            {
+                state = GLUT_ACTIVE_ALT;
+            }
+            if (action.key == PRender::UP)
+            {
+                key = GLUT_KEY_UP;
+            }
+            else if(action.key == PRender::DOWN)
+            {
+                key = GLUT_KEY_DOWN;
+            }
+            else if(action.key == PRender::LEFT)
+            {
+                key = GLUT_KEY_LEFT;
+            }
+            else if(action.key == PRender::RIGHT)
+            {
+                key = GLUT_KEY_RIGHT;
+            }
+            handleSpecial(key, 0, 0, state);
+        }
+    }
+    return;
+}
+
+
 void timer(int value)
 {
     //static int counter_record = 0;
@@ -546,7 +629,7 @@ void timer(int value)
 }
 
 
-PRender::PRender(int& argc, char* argv[], const char* name, Ppmesh* ppmesh, PVisiblePQ* visible_pq, int framerate, Logger& logger)
+PRender::PRender(int& argc, char* argv[], const char* name, Ppmesh* ppmesh, PVisiblePQ* visible_pq, int framerate, Logger& logger, Record* record)
         :receivedBytes_(0), sentBytes_(0),\
         visible_pq_(visible_pq), ppmesh_(ppmesh), view_angle_(45), \
         min_distance_(0.01), max_distance_(5000),\
@@ -555,7 +638,7 @@ PRender::PRender(int& argc, char* argv[], const char* name, Ppmesh* ppmesh, PVis
         mouse_previous_x_(0), mouse_previous_y_(0),mouse_last_x_(0),mouse_last_y_(0) ,width_(500), height_(500), \
         smooth_(false), interpolated_(false), perspective_(true), \
         outline_(false), fill_(true), check_visibility_(true), recheck_visibility_(false),\
-        to_output_(false), isStopped_(false), showBase_(false), logger_(logger)
+        to_output_(false), isStopped_(false), showBase_(false), logger_(logger),        record_(record), beginTime_(0)
 {
     Gfmesh* gfmesh = ppmesh->gfmesh();
 
@@ -624,6 +707,14 @@ PRender::PRender(int& argc, char* argv[], const char* name, Ppmesh* ppmesh, PVis
     glutMouseFunc(mouse);
     glutMotionFunc(motion);
     glutTimerFunc(1000/framerate, timer, framerate);
+    if (record_)
+    {
+        glutIdleFunc(setRecordedAction);
+        if (!record_->empty())
+        {
+            beginTime_ = record_->front().time;
+        }
+    }
 
     glClearColor(0., 0., 0., 0.);
 

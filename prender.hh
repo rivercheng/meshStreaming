@@ -9,6 +9,7 @@ class NoBaseMesh{};
 
 class PRender
 {
+    public:
     friend void update_view_parameter(void);
     friend void stat_screen_area(void);
     friend void disp(void);
@@ -21,9 +22,46 @@ class PRender
     friend void timer(int value);
     friend void log_view_parameter();
     friend void check_visibility();
+    friend void handleSpecial(int key, int x, int y, int state);
+    friend long currTime();
+    friend void setRecordedAction();
+    enum Type
+    {
+        NORMAL,
+        SPECIAL,
+    };
+
+    enum State
+    {
+        NONE,
+        ALT,
+        CTRL,
+    };
+
+    enum Key
+    {
+        UP,
+        DOWN,
+        LEFT,
+        RIGHT,
+        R,
+        Q,
+    };
+    
+    struct Action
+    {
+          long  time;
+          Type  type;
+          State state;
+           Key  key;
+           Action(long t, Type ty, State s, Key k):
+               time(t), type(ty), state(s), key(k){;}
+    };
+
+    typedef std::list<Action> Record;
 
 public:
-    PRender(int& argc, char* argv[], const char* name, Ppmesh* ppmesh, PVisiblePQ* visible_pq, int framerate, Logger& logger);
+    PRender(int& argc, char* argv[], const char* name, Ppmesh* ppmesh, PVisiblePQ* visible_pq, int framerate, Logger& logger, Record* record = 0);
     void enterMainLoop();
 
     void setSmooth(bool value)
@@ -113,5 +151,7 @@ private:
     bool isStopped_;
     bool showBase_;
     Logger& logger_;
+    Record* record_;
+    long beginTime_;
 };
 #endif

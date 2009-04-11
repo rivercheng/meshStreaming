@@ -57,16 +57,20 @@ int main(int argc, char** argv)
         record = new PRender::Record;
         std::ifstream ifs(argv[8]);
         std::string str;
+	bool quited = false;
+        long lastTime = 0;
         while(!ifs.eof())
         {
             std::getline(ifs, str);
             std::stringstream sstr(str);
             int sec;
             int microsec;
+
             std::string action;
             sstr>>sec>>microsec>>action;
             std::cerr<<str<<std::endl;
             long t = sec*1000000 + microsec;
+            lastTime = t;
             if (action == "BEGIN")
             {
                 continue;
@@ -126,12 +130,16 @@ int main(int argc, char** argv)
             else if(action == "QUIT")
             {
                 record->push_back(PRender::Action(t, PRender::NORMAL, PRender::NONE, PRender::Q));
+		quited = true;
             }
             else
             {
-                std::cerr<<"Unkown action in record file."<<std::endl;
                 continue;
             }
+        }
+        if (!quited)
+        {
+		record->push_back(PRender::Action(lastTime+0.5, PRender::NORMAL, PRender::NONE, PRender::Q));
         }
     }
     std::string ip_addr(argv[1]);

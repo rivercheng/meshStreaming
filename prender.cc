@@ -592,6 +592,10 @@ void setRecordedAction()
             }
             handleSpecial(key, 0, 0, state);
         }
+        if (render_->record_->empty())
+        {
+            keyboard(27, 0, 0);
+        }
     }
     return;
 }
@@ -712,7 +716,14 @@ PRender::PRender(int& argc, char* argv[], const char* name, Ppmesh* ppmesh, PVis
         glutIdleFunc(setRecordedAction);
         if (!record_->empty())
         {
-            beginTime_ = record_->front().time;
+		if(record_->front().key != Q)
+        	{
+            	    beginTime_ = record_->front().time;
+                }
+                else
+                { 
+                    beginTime_ = 2;
+                }
         }
     }
 

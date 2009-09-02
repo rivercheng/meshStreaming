@@ -228,7 +228,7 @@ protected:
         helpFormatter.format(std::cout);
     }
 
-    int main(const std::vector<std::string>& args)
+    int main(const std::vector<std::string>&)
     {
         if (_helpRequested)
         {

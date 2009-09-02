@@ -1,5 +1,5 @@
 LIBRARY = -lOpenMesh_Core -lOpenMesh_Tools -lPocoFoundation -lPocoNet -lPocoUtil -lglut #-lprofiler	
-OPTIONS =  -Wall -g -O2 
+OPTIONS =  -Wall -W -Wextra -g -O2 
 BASE = bitstring.o ppmesh.o vertexid.o gfmesh.o packetid.o
 DISPLAY = render.o visiblepq.o view.o
 STREAM = receiver.o
@@ -9,11 +9,12 @@ OBJECTS = bitstring.o ppmesh.o vertexid.o gfmesh.o render.o receiver.o visiblepq
 OBJECTS2 = bitstring.o ppmesh.o vertexid.o gfmesh.o prender.o preceiver.o pvisiblepq.o packetid.o view.o
 CC = g++
 CTAG = ctags
-ALL = mkbalancedpm display server client encode decode packetizer pserver pclient packetinfo testview testsplit pm32to64 viewer testroot
+ALL = mkbalancedpm display server client encode decode packetizer pserver pclient packetinfo testview testsplit pm32to64 viewer testroot duration dispDuration plotViewpoints visitCount
 
 all: $(ALL)
 tags: *.cc *.hh
 	$(CTAG) -R *
+
 ppmesh.o:ppmesh.cc ppmesh.hh huffman.hh
 	$(CC) $(OPTIONS) -c $<
 %.o:%.cc %.hh 
@@ -47,6 +48,14 @@ pm32to64: pm32to64.cc $(BASE)
 viewer: viewer.cc gfmesh.o viewRender.o
 	$(CC) $(OPTIONS) $(LIBRARY) -o $@ $< gfmesh.o viewRender.o
 testroot:testroot.cc $(BASE)
+	$(CC) $(OPTIONS) $(LIBRARY) -o $@ $< $(BASE)
+duration:duration.cc duration.hh $(BASE)
+	$(CC) $(OPTIONS) $(LIBRARY) -o $@ $< $(BASE) 
+visitCount:visitCount.cc duration.hh $(BASE)
+	$(CC) $(OPTIONS) $(LIBRARY) -o $@ $< $(BASE)
+dispDuration:dispDuration.cc dispDuration.hh $(BASE)
+	$(CC) $(OPTIONS) $(LIBRARY) -o $@ $< $(BASE)
+plotViewpoints:plotViewpoints.cc $(BASE)
 	$(CC) $(OPTIONS) $(LIBRARY) -o $@ $< $(BASE)
 clean:
 	rm *.o

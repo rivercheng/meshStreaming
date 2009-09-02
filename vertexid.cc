@@ -155,7 +155,7 @@ static size_t decode_node_id(const BitString& bs, size_t pos, BitString& node_bs
 }
 
 //Decode a bitstring to a nodeID list 
-static size_t decode_one_tree(const BitString& bs, size_t pos, VertexID tree_id, size_t tree_bits, std::vector<VertexID>& ids_in_tree)
+static size_t decode_one_tree(const BitString& bs, size_t pos, VertexID tree_id, size_t, std::vector<VertexID>& ids_in_tree)
 {
     BitString node_bs;
     std::vector<BitString> node_bs_array;

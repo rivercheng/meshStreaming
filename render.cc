@@ -244,7 +244,7 @@ int name(void)
     return time(0);
 }
 
-void keyboard(unsigned char key, int x, int y)
+void keyboard(unsigned char key, int, int)
 {
     size_t n = render_->ppmesh_->n_vertices();
     std::ofstream ofs;
@@ -371,7 +371,7 @@ void keyboard(unsigned char key, int x, int y)
     glutPostRedisplay();
 }
 
-void special(int key, int x, int y)
+void special(int key, int, int)
 {
     int state = glutGetModifiers();
     if (state != GLUT_ACTIVE_ALT && state != GLUT_ACTIVE_CTRL)

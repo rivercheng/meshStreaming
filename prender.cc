@@ -261,7 +261,7 @@ void PRender::render_reset()
     ppmesh_->resetExpectedLevel();
 }
 
-void keyboard(unsigned char key, int x, int y)
+void keyboard(unsigned char key, int, int)
 {
     size_t n = render_->ppmesh_->n_vertices();
     std::ofstream ofs;
@@ -377,7 +377,7 @@ void keyboard(unsigned char key, int x, int y)
 }
 
 
-void handleSpecial(int key, int x, int y, int state)
+void handleSpecial(int key, int, int, int state)
 {
     if (state != GLUT_ACTIVE_ALT && state != GLUT_ACTIVE_CTRL)
     {
@@ -686,7 +686,7 @@ PRender::PRender(int& argc, char* argv[], const char* name, Ppmesh* ppmesh, PVis
     }
     if (max_z - min_z > max_length)
     {
-        max_length = max_z - max_z;
+        max_length = max_z - min_z;
     }
     bounding_length_ = max_length;
 

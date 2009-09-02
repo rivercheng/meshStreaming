@@ -149,7 +149,7 @@ void ViewRender::render_reset()
     fill_         = true;
 }
 
-void keyboard(unsigned char key, int x, int y)
+void keyboard(unsigned char key, int, int)
 {
     std::ofstream ofs;
     switch (key)
@@ -212,7 +212,7 @@ void keyboard(unsigned char key, int x, int y)
     glutPostRedisplay();
 }
 
-void special(int key, int x, int y)
+void special(int key, int, int)
 {
     int state = glutGetModifiers();
     if (state != GLUT_ACTIVE_ALT && state != GLUT_ACTIVE_CTRL)

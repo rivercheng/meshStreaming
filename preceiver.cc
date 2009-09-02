@@ -37,7 +37,7 @@ void PReceiver::run(void)
     try
     {
         DatagramSocket udp_sock;
-	udp_sock.setBlocking(false);
+	    udp_sock.setBlocking(false);
         SocketAddress udpsa(ip_addr_, udp_port_);
         udp_sock.connect(udpsa);
         //udp_sock.setReceiveTimeout(Poco::Timespan(wait_seconds, wait_mseconds));
@@ -76,9 +76,9 @@ void PReceiver::run(void)
 	    //usleep(5000);
             try
             {
-		struct timeval begin_;
-		struct timeval end_;
-	        gettimeofday(&begin_, 0);
+		        struct timeval begin_;
+		        struct timeval end_;
+	            gettimeofday(&begin_, 0);
                 
                 int len = udp_sock.receiveBytes(buffer, sizeof(buffer));
 //		std::cout<<"we rec 1"<<std::endl;

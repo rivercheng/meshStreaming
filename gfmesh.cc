@@ -204,7 +204,7 @@ void Gfmesh::collapse(Index v1)
     updated_ = true;
 }
 
-void Gfmesh::vertex_split(Index v1, Index vl, Index vr, Coordinate x0, Coordinate y0, Coordinate z0)
+void Gfmesh::vertex_split(Index v1, Index, Index, Coordinate x0, Coordinate y0, Coordinate z0)
 {
     Index v0 = vertex_array_.size() / 3;
     vertex_array_.push_back(x0);

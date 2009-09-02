@@ -57,7 +57,7 @@ int main(int argc, char** argv)
         record = new PRender::Record;
         std::ifstream ifs(argv[8]);
         std::string str;
-	bool quited = false;
+	    bool quited = false;
         long lastTime = 0;
         while(!ifs.eof())
         {

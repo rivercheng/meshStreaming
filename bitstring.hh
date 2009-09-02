@@ -184,7 +184,7 @@ public:
     void read_binary(const char* buffer);
 
     //-------------get functions-----------------------
-    const size_t size()const
+    size_t size()const
     {
         return len_ - f_pos_;
     }
